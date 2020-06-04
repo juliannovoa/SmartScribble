@@ -1,0 +1,14 @@
+*.log
+*.pot
+*.pyc
+__pycache__
+*.sqlite3
+media
+*.bak 
+.idea
+*.py[cod] 
+*$py.class 
+bin/
+lib/
+pyvenv.cfg
+
