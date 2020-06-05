@@ -29,3 +29,7 @@ def register_view(request):
         form = RegisterForm()
 
     return render(request, "register/register.html", {"form": form})
+
+
+def login_view(request):
+    return render(request, "register/login.html")
