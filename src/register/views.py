@@ -21,7 +21,6 @@ from .forms import RegisterForm
 def register_view(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
-        print(form.is_valid())
         if form.is_valid():
             usr = form.save()
             return render(request, "register/successfulRegister.html", context={'user': usr})
