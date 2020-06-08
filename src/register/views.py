@@ -12,9 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+from django.contrib.auth.views import LoginView
 from django.shortcuts import render
 
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm
 
 
 # Create your views here.
@@ -32,3 +33,8 @@ def register_view(request):
 
 def login_view(request):
     return render(request, "register/login.html")
+
+
+class CustomLoginView(LoginView):
+    template_name = 'register/login.html'
+    authentication_form = LoginForm
