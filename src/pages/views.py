@@ -13,7 +13,7 @@
 #  limitations under the License.
 #
 
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from document.forms import DocumentCreationForm
 from document.models import Document
@@ -25,6 +25,8 @@ def home_view(request):
 
 
 def profile_view(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
     docs = Document.objects.filter(user__exact=request.user)
     if request.method == "POST":
         form = DocumentCreationForm(request.POST)
