@@ -12,8 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-
-from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
 
 from document.forms import DocumentCreationForm
 from document.models import Document
@@ -24,9 +24,8 @@ def home_view(request):
     return render(request, 'pages/home.html')
 
 
+@login_required
 def profile_view(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
     docs = Document.objects.filter(user__exact=request.user)
     if request.method == "POST":
         form = DocumentCreationForm(request.POST)
