@@ -13,17 +13,18 @@
 #  limitations under the License.
 #
 
-from django.contrib import admin
-from django.contrib.auth import views as auth_views
-from django.urls import path
+from django import forms
 
-from pages.views import profile_view
-from register.views import register_view, CustomLoginView
+from .models import Document
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('register/', register_view, name='register'),
-    path('', CustomLoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
-    path('profile/', profile_view, name='profile'),
-]
+
+class DocumentCreationForm(forms.ModelForm):
+    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Your title'}))
+    description = forms.CharField(required=False, widget=forms.Textarea())
+
+    class Meta:
+        model = Document
+        fields = [
+            'title',
+            'description',
+        ]

@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     # my apps
     'pages',
     'register',
+    'document',
 ]
 
 MIDDLEWARE = [
@@ -128,6 +129,6 @@ STATICFILES_DIRS = [
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'profile'
 
-LOGOUT_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'login'

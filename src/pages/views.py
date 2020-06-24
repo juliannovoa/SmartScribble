@@ -15,7 +15,22 @@
 
 from django.shortcuts import render
 
+from document.forms import DocumentCreationForm
+from document.models import Document
+
 
 # Create your views here.
 def home_view(request):
     return render(request, 'pages/home.html')
+
+
+def profile_view(request):
+    docs = Document.objects.filter(user__exact=request.user)
+    if request.method == "POST":
+        form = DocumentCreationForm(request.POST)
+        if form.is_valid():
+            doc = form.save(commit=False)
+            doc.user = request.user
+            doc.save()
+
+    return render(request, "pages/profile.html", {'form': DocumentCreationForm(), 'docs': docs})
