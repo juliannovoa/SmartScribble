@@ -11,7 +11,7 @@ Your documents
 
     <section class="jumbotron text-center">
         <div class="container">
-            <h1P>Your Documents</h1P>
+            <h1>Your Documents</h1>
             <p class="lead text-muted"> Here you can find a list of the created documents.</p>
         </div>
     </section>
@@ -26,12 +26,12 @@ Your documents
                             <h5 class="card-title">{{ doc.title }}</h5>
                             <p class="card-text">{{ doc.description }}</p>
                             <div class="btn-group">
-                                <button href="#" class="btn btn-sm btn-outline-secondary">Edit</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary">Edit</button>
                                 <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal"
-                                        data-target="#deleteModal{{ doc.id }}">Remove
+                                        data-target="#deleteModal{{ forloop.counter0 }}">Remove
                                 </button>
-
-                                <div class="modal fade" id="deleteModal{{ doc.id }}" tabindex="-1" role="dialog"
+                                <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1"
+                                     role="dialog"
                                      aria-labelledby="deleteHeader" aria-hidden="true">
                                     <div class="modal-dialog">
                                         <div class="modal-content">
@@ -49,8 +49,12 @@ Your documents
                                                 <button type="button" class="btn btn-secondary"
                                                         data-dismiss="modal">Back
                                                 </button>
-                                                <a href="{% url 'remove' doc.id %}" class="btn btn-primary"> Continue
-                                                </a>
+                                                <form action="{% url 'remove' %}" method="POST">
+                                                    {% csrf_token %}
+                                                    <button type="submit" class="btn btn-primary" name="docId"
+                                                            value="{{ doc.id }}">Continue
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     </div>

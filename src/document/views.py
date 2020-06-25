@@ -23,7 +23,8 @@ from document.models import Document
 
 
 @login_required
-def remove_document_view(request, doc_id):
+def remove_document_view(request):
+    doc_id = request.POST['docId']
     doc = get_object_or_404(Document, pk=doc_id)
     if doc.user != request.user:
         raise PermissionDenied

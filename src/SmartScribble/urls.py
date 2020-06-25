@@ -27,5 +27,5 @@ urlpatterns = [
     path('', CustomLoginView.as_view(), name='login'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('profile/', profile_view, name='profile'),
-    path('<int:doc_id>/remove/', remove_document_view, name='remove'),
+    path('remove/', remove_document_view, name='remove'),
 ]
