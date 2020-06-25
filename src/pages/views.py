@@ -20,9 +20,6 @@ from document.models import Document
 
 
 # Create your views here.
-def home_view(request):
-    return render(request, 'pages/home.html')
-
 
 @login_required
 def profile_view(request):
