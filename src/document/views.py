@@ -17,9 +17,10 @@
 # Create your views here.
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 
 from document.models import Document
+from .forms import DocumentEditionForm
 
 
 @login_required
@@ -30,3 +31,21 @@ def remove_document_view(request):
         raise PermissionDenied
     doc.delete()
     return redirect('profile')
+
+
+@login_required
+def edit_document_view(request):
+    if request.method == "GET":
+        doc_id = request.GET['docId']
+        doc = get_object_or_404(Document, pk=doc_id)
+        if doc.user != request.user:
+            raise PermissionDenied
+    if request.method == "POST":
+        doc_id = request.GET['docId']
+        doc = get_object_or_404(Document, pk=doc_id)
+        if doc.user != request.user:
+            raise PermissionDenied
+        form = DocumentEditionForm(request.POST, instance=doc)
+        doc = form.save()
+    return render(request, "document/textEditor.html",
+                  {'form': DocumentEditionForm(initial={'body': doc.body})})

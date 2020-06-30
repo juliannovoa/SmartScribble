@@ -17,7 +17,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from document.views import remove_document_view
+from document.views import remove_document_view, edit_document_view
 from pages.views import profile_view
 from register.views import register_view, CustomLoginView
 
@@ -28,4 +28,5 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('profile/', profile_view, name='profile'),
     path('remove/', remove_document_view, name='remove'),
+    path('edit/', edit_document_view, name='edit'),
 ]

@@ -28,3 +28,13 @@ class DocumentCreationForm(forms.ModelForm):
             'title',
             'description',
         ]
+
+
+class DocumentEditionForm(forms.ModelForm):
+    body = forms.Textarea()
+
+    class Meta:
+        model = Document
+        fields = [
+            'body',
+        ]
