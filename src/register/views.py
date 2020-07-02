@@ -12,14 +12,19 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 from .forms import RegisterForm, LoginForm
 
 
 # Create your views here.
 def register_view(request):
+    if request.user.is_authenticated:
+        return redirect('profile')
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -31,10 +36,20 @@ def register_view(request):
     return render(request, "register/register.html", {"form": form})
 
 
-def login_view(request):
-    return render(request, "register/login.html")
-
-
 class CustomLoginView(LoginView):
+    redirect_authenticated_user = True
     template_name = 'register/login.html'
     authentication_form = LoginForm
+
+
+@login_required
+def change_password_view(request):
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            return redirect('profile')
+    else:
+        form = PasswordChangeForm(request.user)
+    return render(request, 'register/changepswd.html', {'form': form})

@@ -32,3 +32,8 @@ def profile_view(request):
             doc.save()
 
     return render(request, "pages/profile.html", {'form': DocumentCreationForm(), 'docs': docs})
+
+
+@login_required
+def change_data_view(request):
+    return render(request, "pages/changedata.html")

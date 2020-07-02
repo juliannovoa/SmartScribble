@@ -18,8 +18,8 @@ from django.contrib.auth import views as auth_views
 from django.urls import path
 
 from document.views import remove_document_view, edit_document_view
-from pages.views import profile_view
-from register.views import register_view, CustomLoginView
+from pages.views import profile_view, change_data_view
+from register.views import register_view, CustomLoginView, change_password_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,4 +29,6 @@ urlpatterns = [
     path('profile/', profile_view, name='profile'),
     path('remove/', remove_document_view, name='remove'),
     path('edit/', edit_document_view, name='edit'),
+    path('changedata/', change_data_view, name='changedata'),
+    path('changepswd/', change_password_view, name='changepswd'),
 ]
