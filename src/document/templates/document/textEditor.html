@@ -1,36 +1,167 @@
-<!--
-  ~ Copyright 2020 Julián Novoa Martín
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License");
-  ~ you may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
-  ~
-  ~     http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
-  ~
-  -->
-
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
+{% load static %}
+
 {% block title %}
 Text Editor
 {% endblock %}
 
-{% block content %}
-<div class="container">
-    <form method="POST" class="form-group">
-        {% csrf_token %}
-        {{ form | crispy }}
-        <button type="submit" class="btn btn-success">Save</button>
 
+{% block content %}
+
+<div class="container">
+    <form id="writingtool" method="POST" class="form-group">
+        {% csrf_token %}
+        {{ form.media }}
+        {{ form | crispy }}
+        <button type="submit" class="btn btn-success" onclick="removePrediction()">Save</button>
     </form>
     <form action="{% url 'profile' %}">
         <button type="submit" class="btn btn-success">Return</button>
     </form>
 </div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+    function getPredictionElement() {
+        return CKEDITOR.instances.id_body.document.getById('prediction')
+    }
+
+    function getInputForPrediction(pressedKey = "") {
+        // Return the input text to be consumed by the prediction model
+        return CKEDITOR.instances.id_body.document.getBody().getText() + pressedKey
+    }
+
+    function isPredictionValid(prediction) {
+        return true
+        return prediction.startsWith(getInputForPrediction())
+    }
+
+    function insertPrediction(prediction) {
+        let editor = CKEDITOR.instances.id_body
+        let selection = editor.getSelection()
+        if (selection == null) {
+            return
+        }
+        let bookmarks = selection.createBookmarks(true);
+        // Move cursor one offset to the right
+        // let currentRanges = selection.getRanges(true)
+        // let range = currentRanges[0]
+        // range.setStart(range.startContainer, range.startOffset + 1)
+        // range.setEnd(range.endContainer, range.endOffset + 1)
+        // selection.selectRanges(currentRanges);
+
+        // Move cursor after bookmark span
+        let node = editor.document.getById(bookmarks[0].startNode)
+        let range = editor.createRange();
+        range.setStartAfter(node);
+        range.collapse(true);
+        editor.getSelection().selectRanges([range]);
+        editor.insertHtml(
+            "<span id='prediction' style='color: #AAA'>" + prediction + "</span>", 'unfiltered_html'
+        )
+
+        selection.selectBookmarks(bookmarks);
+    }
+
+    function processResponse(response) {
+        let responsePrediction = response.prediction
+        if (!isPredictionValid(responsePrediction)) {
+            return
+        }
+        insertPrediction(responsePrediction)
+
+    }
+
+    function predictionMatchesKey(prediction, key) {
+        // normalize
+        if (prediction.length === 0) {
+            return false
+        }
+        let normalizedPrediction = prediction[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
+        if (key === " ") {
+            return prediction.startsWith(String.fromCharCode(160))
+        }
+        return prediction[0].toLowerCase().valueOf() === key.toLowerCase().valueOf()
+    }
+
+    function sendPredictionRequest(pressedKey = "") {
+        $.ajax({
+            url: "{% url 'prediction' %}",
+            data: {
+                input: getInputForPrediction(pressedKey)
+            },
+            dataType: 'json',
+            success: function (response) {
+                processResponse(response)
+            },
+            //error: function (xhr) {
+            //}
+        });
+    }
+
+    function acceptPrediction() {
+        let editor = CKEDITOR.instances.id_body
+        let currentPrediction = getPredictionElement()
+        if (currentPrediction != null) {
+            const currentPredictionText = currentPrediction.getText()
+            editor.insertText(currentPredictionText)
+            currentPrediction.remove()
+        }
+        sendPredictionRequest()
+    }
+
+    function processKeyPress(event) {
+        let key = String.fromCharCode(event.data.getKey())
+        let currentPrediction = getPredictionElement()
+        if (currentPrediction != null) {
+            let currentPredictionText = currentPrediction.getText()
+            if (predictionMatchesKey(currentPredictionText, key)) {
+                currentPrediction.setText(currentPredictionText.substring(1))
+                return
+            }
+            currentPrediction.remove()
+        }
+        sendPredictionRequest(key)
+    }
+
+    function processKeyDown(event) {
+        // Remove suggestion if del key is pressed.
+        if (event.data.getKey() === 8) {
+            removePrediction()
+        }
+        if (event.data.getKey() === 9) {
+            if (!event.preventDefault) {
+                event.data.preventDefault();
+            }
+            acceptPrediction()
+        }
+
+    }
+
+    function processKeyUp(event) {
+        if (event.data.getKey() === 13) {
+            removePrediction()
+        }
+    }
+
+    function removePrediction(event) {
+        let currentPrediction = getPredictionElement()
+        if (currentPrediction != null) {
+            currentPrediction.remove()
+        }
+    }
+
+    CKEDITOR.on('instanceReady', function (e) {
+        CKEDITOR.instances.id_body.document.on('keypress', processKeyPress)
+        CKEDITOR.instances.id_body.document.on('keyup', processKeyUp)
+        CKEDITOR.instances.id_body.document.on('keydown', processKeyDown)
+        CKEDITOR.instances.id_body.document.on('click', removePrediction)
+    })
+
+
+</script>
 {% endblock %}
