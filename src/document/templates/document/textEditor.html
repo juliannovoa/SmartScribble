@@ -42,10 +42,6 @@ Text Editor
 
     function insertPrediction(prediction) {
         let editor = CKEDITOR.instances.id_body
-        let currentPrediction = getPredictionElement()
-        if (currentPrediction != null) {
-            currentPrediction.remove()
-        }
         let selection = editor.getSelection()
         if (selection == null) {
             return
@@ -59,7 +55,7 @@ Text Editor
         range.collapse(true);
         editor.getSelection().selectRanges([range]);
         editor.insertHtml(
-            "<span id='prediction' style='color: #AAA'>" + prediction + "</span>", 'unfiltered_html'
+            "<span id=" + prediction + " style=color: #AAA>" + prediction + "</span>", 'unfiltered_html'
         )
 
         selection.selectBookmarks(bookmarks);
@@ -96,7 +92,6 @@ Text Editor
             success: function (response) {
                 processResponse(response)
             },
-
         });
     }
 
