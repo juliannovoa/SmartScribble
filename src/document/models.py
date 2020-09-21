@@ -1,3 +1,4 @@
+from ckeditor.fields import RichTextField
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -6,5 +7,5 @@ from django.db import models
 class Document(models.Model):
     title = models.CharField(max_length=50)
     description = models.CharField(max_length=100, blank=True)
-    body = models.TextField(blank=True)
+    body = RichTextField(blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

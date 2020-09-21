@@ -15,12 +15,16 @@
 
 
 # Create your views here.
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect, render
 
-from document.models import Document
 from .forms import DocumentEditionForm
+from .models import Document
+from .prediction import PredictionService
 
 
 @login_required
@@ -49,3 +53,15 @@ def edit_document_view(request):
         doc = form.save()
     return render(request, "document/textEditor.html",
                   {'form': DocumentEditionForm(initial={'body': doc.body})})
+
+
+@login_required
+def predict_view(request):
+    INPUT_KEY = 'input'
+    if request.method == 'GET' and request.is_ajax() and INPUT_KEY in request.GET:
+        # Encode a text inputs
+        text = request.GET[INPUT_KEY]
+        prediction = PredictionService.instance(request.user.settings.prediction_model).get_prediction(text)
+        return HttpResponse(json.dumps({'prediction': prediction}))
+
+    return HttpResponseServerError("Empty request.")

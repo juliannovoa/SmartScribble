@@ -13,6 +13,7 @@
 #  limitations under the License.
 #
 
+from ckeditor.fields import RichTextFormField
 from django import forms
 
 from .models import Document
@@ -31,7 +32,7 @@ class DocumentCreationForm(forms.ModelForm):
 
 
 class DocumentEditionForm(forms.ModelForm):
-    body = forms.Textarea()
+    body = RichTextFormField()
 
     class Meta:
         model = Document

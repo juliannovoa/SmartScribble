@@ -11,4 +11,5 @@ media
 bin/
 lib/
 pyvenv.cfg
+*.lock
 

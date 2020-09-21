@@ -17,6 +17,8 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
 
+from .models import PredictionModels
+
 
 class RegisterForm(UserCreationForm):
     email = forms.EmailField()
@@ -28,3 +30,7 @@ class RegisterForm(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
     remember_me = forms.BooleanField(label="Remember me", required=False)
+
+
+class PredictionModelForm(forms.Form):
+    selected_prediction_model = forms.ChoiceField(choices=[(model.name, model.value) for model in PredictionModels])

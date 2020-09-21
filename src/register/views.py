@@ -18,7 +18,7 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, PredictionModelForm
 
 
 # Create your views here.
@@ -29,7 +29,7 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             usr = form.save()
-            return render(request, "register/successfulRegister.html", context={'user': usr})
+            return render(request, "pages/profile.html", context={'user': usr})
     else:
         form = RegisterForm()
 
@@ -53,3 +53,20 @@ def change_password_view(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'register/changepswd.html', {'form': form})
+
+
+@login_required
+def change_predictionmodel_view(request):
+    if request.method == "POST":
+        form = PredictionModelForm(request.POST)
+        print(request.POST['selected_prediction_model'])
+        if form.is_valid():
+            usr = request.user
+            prediction_model = form.cleaned_data['selected_prediction_model']
+            usr.settings.prediction_model = prediction_model
+            usr.save()
+    else:
+        form = PredictionModelForm()
+        prediction_model = request.user.settings.prediction_model
+
+    return render(request, 'register/changepm.html', {'pm': prediction_model, 'form': form})

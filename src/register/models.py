@@ -14,3 +14,33 @@
 #
 
 # Create your models here.
+
+
+from django.contrib.auth.models import User
+from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+
+class PredictionModels(models.TextChoices):
+    GPT2 = 'gpt-2'
+    BERT = 'bert'
+    ALBERT = 'albert'
+
+
+class Settings(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    prediction_model = models.CharField(max_length=6,
+                                        choices=PredictionModels.choices,
+                                        default=PredictionModels.GPT2)
+
+
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Settings.objects.create(user=instance)
+
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.settings.save()
