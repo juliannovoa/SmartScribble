@@ -48,15 +48,14 @@ Text Editor
         }
         let bookmarks = selection.createBookmarks(true);
 
+
         // Move cursor after bookmark span
         let node = editor.document.getById(bookmarks[0].startNode)
         let range = editor.createRange();
         range.setStartAfter(node);
         range.collapse(true);
         editor.getSelection().selectRanges([range]);
-        editor.insertHtml(
-            "<span id=" + prediction + " style=color: #AAA>" + prediction + "</span>", 'unfiltered_html'
-        )
+        editor.insertHtml("<span id='prediction' style='color: #AAA'>" + prediction + "</span>", 'unfiltered_html')
 
         selection.selectBookmarks(bookmarks);
     }
@@ -92,6 +91,7 @@ Text Editor
             success: function (response) {
                 processResponse(response)
             },
+
         });
     }
 
