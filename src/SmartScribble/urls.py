@@ -19,7 +19,7 @@ from django.urls import path
 
 from document.views import remove_document_view, edit_document_view, predict_view
 from pages.views import profile_view, change_data_view
-from register.views import register_view, CustomLoginView, change_password_view, change_predictionmodel_view
+from register.views import register_view, CustomLoginView, change_password_view, change_prediction_model_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,5 +32,5 @@ urlpatterns = [
     path('changedata/', change_data_view, name='changedata'),
     path('changepswd/', change_password_view, name='changepswd'),
     path('predict/', predict_view, name='prediction'),
-    path('changepm/', change_predictionmodel_view, name='changepm'),
+    path('changepm/', change_prediction_model_view, name='changepm'),
 ]

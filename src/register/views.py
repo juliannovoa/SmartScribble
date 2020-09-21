@@ -48,7 +48,7 @@ def change_password_view(request):
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            update_session_auth_hash(request, user)  # Important!
+            update_session_auth_hash(request, user)
             return redirect('profile')
     else:
         form = PasswordChangeForm(request.user)
@@ -56,7 +56,7 @@ def change_password_view(request):
 
 
 @login_required
-def change_predictionmodel_view(request):
+def change_prediction_model_view(request):
     if request.method == "POST":
         form = PredictionModelForm(request.POST)
         print(request.POST['selected_prediction_model'])

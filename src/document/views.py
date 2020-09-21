@@ -19,7 +19,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseServerError
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import DocumentEditionForm
@@ -56,11 +56,12 @@ def edit_document_view(request):
 
 
 @login_required
-def predict(request):
-    if request.method == 'GET' and request.is_ajax():
+def predict_view(request):
+    INPUT_KEY = 'input'
+    if request.method == 'GET' and request.is_ajax() and INPUT_KEY in request.GET:
         # Encode a text inputs
-        text = request.GET['input']
-        prediction = PredictionService.instance().get_prediction(text)
+        text = request.GET[INPUT_KEY]
+        prediction = PredictionService.instance(request.user.settings.prediction_model).get_prediction(text)
         return HttpResponse(json.dumps({'prediction': prediction}))
 
-    return HttpResponse()
+    return HttpResponseServerError("Empty request.")

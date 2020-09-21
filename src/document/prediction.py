@@ -25,7 +25,7 @@ LOCK_FILE = "prediction.lock"
 class PredictionService:
     __instances = {}
     __params = {
-        PredictionModels.GPT2.name: (GPT2Tokenizer, GPT2LMHeadModel, 'gpt2-large'),
+        PredictionModels.GPT2.name: (GPT2Tokenizer, GPT2LMHeadModel, 'gpt2-xl'),
         PredictionModels.BERT.name: (BertTokenizer, BertModel, 'bert-base-uncased'),
         PredictionModels.ALBERT.name: (AlbertTokenizer, AlbertModel, 'albert-xxlarge-v2'),
     }
@@ -38,12 +38,16 @@ class PredictionService:
         if prediction_model not in PredictionService.__instances:
             with FileLock(LOCK_FILE).acquire(timeout=LOCK_TIMEOUT):
                 if prediction_model not in PredictionService.__instances:
+                    print("Empieza Carga modelo")
                     PredictionService.__instances[prediction_model] = PredictionService.create(prediction_model)
+                    print("Fin Carga modelo")
         return PredictionService.__instances[prediction_model]
 
     @staticmethod
     def create(prediction_model):
+        print("Empieza crear modelo")
         tokenizer, head_model, pretrained = PredictionService.__params[prediction_model]
+        print("Fin crear modelo")
         return PredictionModel(tokenizer, head_model, pretrained)
 
 
@@ -51,11 +55,16 @@ class PredictionModel:
 
     def __init__(self, tokenizer, head_model, pretrained):
         # Load pre-trained model tokenizer (vocabulary)
+        print("Crear tokenicer en instancia")
         self.tokenizer = tokenizer.from_pretrained(pretrained)
+        print("Crear tokenicer en instancia 2")
         # Load pre-trained model (weights)
+        print("Carga modelo en instancia")
         self.model = head_model.from_pretrained(pretrained)
+        print("Carga modelo en instancia 2")
         # Set the model in evaluation mode to deactivate the DropOut modules
         self.model.eval()
+        print("Instancia creada")
 
     def _predict(self, text):
         indexed_tokens = self.tokenizer.encode(text)
