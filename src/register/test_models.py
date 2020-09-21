@@ -13,4 +13,17 @@
 #  limitations under the License.
 #
 
-# Create your tests here.
+from django.contrib.auth.models import User
+from django.test import TestCase
+
+
+class UserCreationTestCase(TestCase):
+    def setUp(self):
+        User.objects.create(username='user1',
+                            email='aaa@acb.com',
+                            password='qawsedrftgyh')
+
+    def test_has_prediction_model(self):
+        user = User.objects.get(username="user1")
+        self.assertIsNotNone(user.settings)
+        self.assertIsNotNone(user.settings.prediction_model)
