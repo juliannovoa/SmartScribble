@@ -19,9 +19,24 @@ from django.test import TestCase
 
 class UserCreationTestCase(TestCase):
     def setUp(self):
-        User.objects.create(username='user1',
-                            email='aaa@acb.com',
-                            password='qawsedrftgyh')
+        User.objects.create(username='user1')
+
+    def test_settings_label(self):
+        user = User.objects.get(username="user1")
+        field_settings_label = user._meta.get_field('settings').name
+        self.assertEqual(field_settings_label, 'settings')
+
+    def test_prediction_model_label(self):
+        user = User.objects.get(username="user1")
+        field_prediction_model = user.settings._meta.get_field('prediction_model')
+        field_prediction_model_label = field_prediction_model.verbose_name
+        self.assertEqual(field_prediction_model_label, 'prediction model')
+
+    def test_prediction_model_length(self):
+        user = User.objects.get(username="user1")
+        field_prediction_model = user.settings._meta.get_field('prediction_model')
+        max_length = field_prediction_model.max_length
+        self.assertEqual(max_length, 6)
 
     def test_has_prediction_model(self):
         user = User.objects.get(username="user1")
