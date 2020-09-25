@@ -53,3 +53,12 @@ class PredictionModelFormTest(TestCase):
         for model in PredictionModels:
             self.assertTrue((model.name, model.value) in choices)
         self.assertEqual(len(choices), len(PredictionModels))
+
+    def test_form_created_correct_with_model_names(self):
+        for model in PredictionModels:
+            data = {'selected_prediction_model': model.name}
+            self.assertTrue(PredictionModelForm(data).is_valid())
+
+    def test_form_detects_incorrect_input(self):
+        data = {'selected_prediction_model': "invalid_name"}
+        self.assertFalse(PredictionModelForm(data).is_valid())

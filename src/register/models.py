@@ -32,7 +32,7 @@ class Settings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     prediction_model = models.CharField(max_length=6,
                                         choices=PredictionModels.choices,
-                                        default=PredictionModels.GPT2)
+                                        default=PredictionModels.GPT2.name)
 
 
 @receiver(post_save, sender=User)

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'pages',
     'register',
     'document',
+    'common',
 ]
 
 MIDDLEWARE = [

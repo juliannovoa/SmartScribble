@@ -25,15 +25,15 @@ from .forms import RegisterForm, LoginForm, PredictionModelForm
 def register_view(request):
     if request.user.is_authenticated:
         return redirect('profile')
-    if request.method == "POST":
+    if request.method == 'POST':
         form = RegisterForm(request.POST)
         if form.is_valid():
             usr = form.save()
-            return render(request, "pages/profile.html", context={'user': usr})
+            return render(request, 'pages/profile.html', context={'user': usr})
     else:
         form = RegisterForm()
 
-    return render(request, "register/register.html", {"form": form})
+    return render(request, 'register/register.html', {'form': form})
 
 
 class CustomLoginView(LoginView):
@@ -57,16 +57,13 @@ def change_password_view(request):
 
 @login_required
 def change_prediction_model_view(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         form = PredictionModelForm(request.POST)
-        print(request.POST['selected_prediction_model'])
         if form.is_valid():
             usr = request.user
-            prediction_model = form.cleaned_data['selected_prediction_model']
-            usr.settings.prediction_model = prediction_model
-            usr.save()
+            usr.settings.prediction_model = form.cleaned_data['selected_prediction_model']
+            usr.settings.save()
     else:
         form = PredictionModelForm()
-        prediction_model = request.user.settings.prediction_model
 
-    return render(request, 'register/changepm.html', {'pm': prediction_model, 'form': form})
+    return render(request, 'register/changepm.html', {'pm': request.user.settings.prediction_model, 'form': form})

@@ -17,7 +17,9 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
-from register.forms import RegisterForm
+from common.util_test import get_logged_users
+from register.forms import RegisterForm, PredictionModelForm, LoginForm
+from register.models import PredictionModels
 
 
 class RegisterViewTest(TestCase):
@@ -37,7 +39,7 @@ class RegisterViewTest(TestCase):
     def test_view_uses_correct_template_user_not_logged(self):
         response = self.client.get(reverse('register'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "register/register.html")
+        self.assertTemplateUsed(response, 'register/register.html')
 
     def test_view_redirects_user_logged(self):
         user = User.objects.get(username='test_user')
@@ -67,7 +69,7 @@ class RegisterViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         user = User.objects.get(username='test_user_2')
         self.assertIsNotNone(user)
-        self.assertTemplateUsed(response, "pages/profile.html")
+        self.assertTemplateUsed(response, 'pages/profile.html')
 
     def test_view_response_form_invalid_data(self):
         data = {'username': 'test_user_2',
@@ -76,7 +78,7 @@ class RegisterViewTest(TestCase):
                 'password2': 'qawsedgyh'}
         response = self.client.post(reverse('register'), data)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "register/register.html")
+        self.assertTemplateUsed(response, 'register/register.html')
 
 
 class ChangePasswordViewTest(TestCase):
@@ -102,12 +104,12 @@ class ChangePasswordViewTest(TestCase):
         response = self.client.get(reverse('changepswd'))
         self.assertEqual(response.status_code, 200)
 
-    def test_view_uses_correct_template_user_not_logged(self):
+    def test_view_uses_correct_template(self):
         user = User.objects.get(username='test_user')
         self.client.force_login(user)
         response = self.client.get(reverse('changepswd'))
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "register/changepswd.html")
+        self.assertTemplateUsed(response, 'register/changepswd.html')
 
     def test_form_change_password_is_correct(self):
         user = User.objects.get(username='test_user')
@@ -117,7 +119,7 @@ class ChangePasswordViewTest(TestCase):
         form = response.context['form']
         self.assertTrue(isinstance(form, PasswordChangeForm))
 
-    def test_initial_form_create_user_is_empty(self):
+    def test_initial_form_change_password_is_empty(self):
         user = User.objects.get(username='test_user')
         self.client.force_login(user)
         response = self.client.get(reverse('changepswd'))
@@ -136,7 +138,7 @@ class ChangePasswordViewTest(TestCase):
         response = self.client.post(reverse('changepswd'), data)
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, reverse('profile'))
-        user = User.objects.get(username='test_user')
+        user.refresh_from_db()
         self.assertTrue(user.check_password(new_password))
 
     def test_view_response_form_invalid_data(self):
@@ -148,4 +150,125 @@ class ChangePasswordViewTest(TestCase):
                 'new_password2': new_password}
         response = self.client.post(reverse('changepswd'), data)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "register/changepswd.html")
+        self.assertTemplateUsed(response, 'register/changepswd.html')
+
+
+class ChangePredictionModelViewTest(TestCase):
+    def setUp(self):
+        user = User.objects.create(username='test_user')
+        user.save()
+
+    def test_redirect_if_not_logged(self):
+        response = self.client.get('/changepm/')
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/login/'))
+
+    def test_view_url_exists_at_desired_location(self):
+        user = User.objects.get(username='test_user')
+        self.client.force_login(user)
+        response = self.client.get('/changepm/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        user = User.objects.get(username='test_user')
+        self.client.force_login(user)
+        response = self.client.get(reverse('changepm'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template(self):
+        user = User.objects.get(username='test_user')
+        self.client.force_login(user)
+        response = self.client.get(reverse('changepm'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'register/changepm.html')
+
+    def test_form_change_prediction_model_is_correct(self):
+        user = User.objects.get(username='test_user')
+        self.client.force_login(user)
+        response = self.client.get(reverse('changepm'))
+        self.assertEqual(response.status_code, 200)
+        form = response.context['form']
+        self.assertTrue(isinstance(form, PredictionModelForm))
+
+    def test_initial_form_change_prediction_model_is_empty(self):
+        user = User.objects.get(username='test_user')
+        self.client.force_login(user)
+        response = self.client.get(reverse('changepm'))
+        self.assertEqual(response.status_code, 200)
+        form = response.context['form']
+        self.assertFalse(form.is_bound)
+
+    def test_view_change_prediction_model(self):
+        user = User.objects.get(username='test_user')
+        self.client.force_login(user)
+        for model in PredictionModels:
+            data = {'selected_prediction_model': model.name}
+            self.assertTrue(PredictionModelForm(data).is_valid())
+            response = self.client.post(reverse('changepm'), data)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.context['pm'], model.name)
+            user.refresh_from_db()
+            self.assertEqual(user.settings.prediction_model, model.name)
+
+
+class CustomLogInViewTest(TestCase):
+    def setUp(self):
+        user = User.objects.create(username='test_user')
+        user.set_password('qawsedrftgyh')
+        user.save()
+
+    def test_view_url_exists_at_desired_location(self):
+        response = self.client.get('/login/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_url_accessible_by_name(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_uses_correct_template_user_not_logged(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'register/login.html')
+
+    def test_view_redirects_user_logged(self):
+        user = User.objects.get(username='test_user')
+        self.client.force_login(user)
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('profile'))
+
+    def test_form_login_user_is_correct(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        form = response.context['form']
+        self.assertTrue(isinstance(form, LoginForm))
+
+    def test_initial_form_create_user_is_empty(self):
+        response = self.client.get(reverse('login'))
+        self.assertEqual(response.status_code, 200)
+        form = response.context['form']
+        self.assertFalse(form.is_bound)
+
+    def test_view_logs_user(self):
+        user_data = {'username': 'test_user',
+                     'password': 'qawsedrftgyh'}
+        user = User.objects.get(username=user_data['username'])
+        logged_users_list = get_logged_users()
+        self.assertFalse(user in logged_users_list)
+        response = self.client.post(reverse('login'), user_data)
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('profile'))
+        logged_users_list = get_logged_users()
+        self.assertTrue(user in logged_users_list)
+
+    def test_view_response_form_invalid_data(self):
+        user_data = {'username': 'test_user',
+                     'password': 'invalid'}
+        user = User.objects.get(username=user_data['username'])
+        logged_users_list = get_logged_users()
+        self.assertFalse(user in logged_users_list)
+        response = self.client.post(reverse('login'), user_data)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'register/login.html')
+        logged_users_list = get_logged_users()
+        self.assertFalse(user in logged_users_list)

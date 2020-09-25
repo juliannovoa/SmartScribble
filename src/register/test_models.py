@@ -16,6 +16,8 @@
 from django.contrib.auth.models import User
 from django.test import TestCase
 
+from register.models import PredictionModels
+
 
 class UserCreationTestCase(TestCase):
     def setUp(self):
@@ -42,3 +44,8 @@ class UserCreationTestCase(TestCase):
         user = User.objects.get(username="test_user")
         self.assertIsNotNone(user.settings)
         self.assertIsNotNone(user.settings.prediction_model)
+
+
+class PredictionModelsTest(TestCase):
+    def test_is_prediction_models_not_empty(self):
+        self.assertGreater(len(PredictionModels), 0)
