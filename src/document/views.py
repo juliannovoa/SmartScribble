@@ -29,29 +29,34 @@ from .prediction import PredictionService
 
 @login_required
 def remove_document_view(request):
-    doc_id = request.POST['docId']
-    doc = get_object_or_404(Document, pk=doc_id)
-    if doc.user != request.user:
-        raise PermissionDenied
-    doc.delete()
-    return redirect('profile')
+    if request.method == 'POST':
+        doc_id = request.POST['doc_id']
+        doc = get_object_or_404(Document, pk=doc_id)
+        if doc.user != request.user:
+            raise PermissionDenied
+        doc.delete()
+        return redirect('profile')
+    else:
+        return HttpResponseServerError('Wrong request.')
 
 
 @login_required
 def edit_document_view(request):
-    if request.method == "GET":
-        doc_id = request.GET['docId']
-        doc = get_object_or_404(Document, pk=doc_id)
-        if doc.user != request.user:
-            raise PermissionDenied
-    if request.method == "POST":
-        doc_id = request.GET['docId']
-        doc = get_object_or_404(Document, pk=doc_id)
-        if doc.user != request.user:
-            raise PermissionDenied
+    if request.method == 'GET':
+        doc_id = request.GET['doc_id']
+    elif request.method == 'POST':
+        doc_id = request.POST['doc_id']
+    else:
+        return HttpResponseServerError('Wrong request')
+
+    doc = get_object_or_404(Document, pk=doc_id)
+    if doc.user != request.user:
+        raise PermissionDenied
+
+    if request.method == 'POST':
         form = DocumentEditionForm(request.POST, instance=doc)
         doc = form.save()
-    return render(request, "document/textEditor.html",
+    return render(request, 'document/textEditor.html',
                   {'form': DocumentEditionForm(initial={'body': doc.body})})
 
 
@@ -64,4 +69,4 @@ def predict_view(request):
         prediction = PredictionService.instance(request.user.settings.prediction_model).get_prediction(text)
         return HttpResponse(json.dumps({'prediction': prediction}))
 
-    return HttpResponseServerError("Empty request.")
+    return HttpResponseServerError('Empty request.')

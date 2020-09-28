@@ -25,7 +25,7 @@ Your documents
                             <p class="card-text">{{ doc.description }}</p>
                             <div class="btn-group">
                                 <form action="{% url 'edit' %}" method="GET">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary" name="docId"
+                                    <button type="submit" class="btn btn-sm btn-outline-secondary" name="doc_id"
                                             value="{{ doc.id }}">Edit
                                     </button>
                                 </form>
@@ -53,7 +53,7 @@ Your documents
                                                 </button>
                                                 <form action="{% url 'remove' %}" method="POST">
                                                     {% csrf_token %}
-                                                    <button type="submit" class="btn btn-primary" name="docId"
+                                                    <button type="submit" class="btn btn-primary" name="doc_id"
                                                             value="{{ doc.id }}">Continue
                                                     </button>
                                                 </form>
