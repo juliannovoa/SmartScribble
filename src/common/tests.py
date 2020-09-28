@@ -51,17 +51,27 @@ from common.util_test import get_logged_users
 
 
 class UtilTestTest(TestCase):
-    def setUp(self):
-        NUMBER_OF_USERS = 2
-        for i in range(NUMBER_OF_USERS):
-            user = User.objects.create(username=f'test_user{i}')
-            user.set_password(f'qawsedrftgyh{i}')
+
+    @staticmethod
+    def get_test_username(user_number: int) -> str:
+        return f'test_user{user_number}'
+
+    @staticmethod
+    def get_test_password(user_number: int) -> str:
+        return f'qawsedrftgyh{user_number}'
+
+    @staticmethod
+    def create_test_users(number_of_users: int) -> None:
+        for i in range(number_of_users):
+            user = User.objects.create(username=UtilTestTest.get_test_username(i))
+            user.set_password(UtilTestTest.get_test_password(i))
             user.save()
 
-    def test_get_logged_users(self):
+    def test_get_logged_users(self) -> None:
+        UtilTestTest.create_test_users(2)
         users_set = set(User.objects.all())
         for i in range(len(users_set)):
             c = Client()
-            c.login(username=f'test_user{i}', password=f'qawsedrftgyh{i}')
+            c.login(username=UtilTestTest.get_test_username(i), password=UtilTestTest.get_test_password(i))
         logged_users_set = set(get_logged_users())
         self.assertEqual(logged_users_set, users_set)

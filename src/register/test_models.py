@@ -19,33 +19,19 @@ from django.test import TestCase
 from register.models import PredictionModels
 
 
-class UserCreationTestCase(TestCase):
-    def setUp(self):
-        User.objects.create(username='test_user')
+class SettingsModelTest(TestCase):
 
-    def test_settings_label(self):
-        user = User.objects.get(username="test_user")
-        field_settings_label = user._meta.get_field('settings').name
-        self.assertEqual(field_settings_label, 'settings')
-
-    def test_prediction_model_label(self):
-        user = User.objects.get(username="test_user")
-        field_prediction_model = user.settings._meta.get_field('prediction_model')
-        field_prediction_model_label = field_prediction_model.verbose_name
-        self.assertEqual(field_prediction_model_label, 'prediction model')
-
-    def test_prediction_model_length(self):
-        user = User.objects.get(username="test_user")
-        field_prediction_model = user.settings._meta.get_field('prediction_model')
-        max_length = field_prediction_model.max_length
+    def test_prediction_model_max_length(self):
+        field_prediction_model = User.settings.related.related_model.prediction_model
+        max_length = field_prediction_model.field.max_length
         self.assertEqual(max_length, 6)
 
     def test_has_prediction_model(self):
-        user = User.objects.get(username="test_user")
+        user = User.objects.create(username='test_user')
         self.assertIsNotNone(user.settings)
         self.assertIsNotNone(user.settings.prediction_model)
 
 
-class PredictionModelsTest(TestCase):
+class PredictionModelsModelTest(TestCase):
     def test_is_prediction_models_not_empty(self):
         self.assertGreater(len(PredictionModels), 0)

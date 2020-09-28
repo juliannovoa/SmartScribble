@@ -32,7 +32,7 @@ from django.contrib.sessions.models import Session
 from django.utils import timezone
 
 
-def get_logged_users():
+def get_logged_users() -> list:
     sessions = Session.objects.filter(expire_date__gte=timezone.now())
     uid_list = []
     for session in sessions:
