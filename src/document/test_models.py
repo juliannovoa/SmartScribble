@@ -22,29 +22,29 @@ from document.models import Document
 
 class DocumentModelTest(TestCase):
     def setUp(self):
-        User.objects.create(username='test_user')
+        self.test_user = User.objects.create(username='test_user')
 
     def test_title_max_length(self):
         title_max_length = Document.title.field.max_length
         self.assertEqual(title_max_length, 50)
-        user = User.objects.get(username='test_user')
+
         title = 'a' * 51
         document = Document.objects.create(title=title,
                                            description='test_description',
                                            body='test_body',
-                                           user=user)
+                                           user=self.test_user)
         with self.assertRaises(ValidationError):
             document.full_clean()
 
     def test_title_limit_max_length(self):
         title_max_length = Document.title.field.max_length
         self.assertEqual(title_max_length, 50)
-        user = User.objects.get(username='test_user')
+
         title = 'a' * 50
         document = Document.objects.create(title=title,
                                            description='test_description',
                                            body='test_body',
-                                           user=user)
+                                           user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
@@ -53,52 +53,52 @@ class DocumentModelTest(TestCase):
     def test_description_max_length(self):
         description_max_length = Document.description.field.max_length
         self.assertEqual(description_max_length, 100)
-        user = User.objects.get(username='test_user')
+
         description = 'a' * 101
         document = Document.objects.create(title='test_title',
                                            description=description,
                                            body='test_body',
-                                           user=user)
+                                           user=self.test_user)
         with self.assertRaises(ValidationError):
             document.full_clean()
 
     def test_description_limit_max_length(self):
         description_max_length = Document.description.field.max_length
         self.assertEqual(description_max_length, 100)
-        user = User.objects.get(username='test_user')
+
         description = 'a' * 100
         document = Document.objects.create(title='test_title',
                                            description=description,
                                            body='test_body',
-                                           user=user)
+                                           user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
             self.fail('Document is not correct.')
 
     def test_title_is_mandatory(self):
-        user = User.objects.get(username='test_user')
+
         document = Document.objects.create(description='test_description',
                                            body='test_body',
-                                           user=user)
+                                           user=self.test_user)
         with self.assertRaises(ValidationError):
             document.full_clean()
 
     def test_description_is_not_mandatory(self):
-        user = User.objects.get(username='test_user')
+
         document = Document.objects.create(title='test_title',
                                            body='test_body',
-                                           user=user)
+                                           user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
             self.fail('Document is not correct.')
 
     def test_body_is_not_mandatory(self):
-        user = User.objects.get(username='test_user')
+
         document = Document.objects.create(title='test_title',
                                            description='test_description',
-                                           user=user)
+                                           user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
@@ -111,11 +111,11 @@ class DocumentModelTest(TestCase):
                                     body='test_body')
 
     def test_document_deletion_after_user_deletion(self):
-        user = User.objects.get(username='test_user')
+
         document = Document.objects.create(title='test_title',
                                            description='test_description',
                                            body='test_body',
-                                           user=user)
+                                           user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
@@ -124,6 +124,6 @@ class DocumentModelTest(TestCase):
         document.save()
         document_pk = document.pk
         self.assertEqual(Document.objects.get(pk=document_pk), document)
-        user.delete()
+        self.test_user.delete()
         with self.assertRaises(Document.DoesNotExist):
             Document.objects.get(pk=document_pk)

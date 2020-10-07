@@ -13,49 +13,30 @@
 #  limitations under the License.
 #
 
-# from django.test import TestCase
-#
-#
-# class DocumentCreationFormTest(TestCase):
-#     def test_form_contains_email(self):
-#         form = RegisterForm()
-#         self.assertTrue('email' in form.base_fields)
-#
-#
-# class DocumentEditionFormTest(TestCase):
-#     def test_remember_field_label(self):
-#         form = LoginForm()
-#         self.assertTrue('remember_me' in form.fields)
-#         field_label = form.fields['remember_me'].label
-#         self.assertEqual(field_label, 'Remember me')
-#
-#     def test_remember_field_not_required(self):
-#         form = LoginForm()
-#         self.assertTrue('remember_me' in form.fields)
-#         self.assertFalse(form.fields['remember_me'].required)
-#
-#
-# class PredictionModelFormTest(TestCase):
-#     def test_selected_prediction_model_label(self):
-#         form = PredictionModelForm()
-#         self.assertTrue('selected_prediction_model' in form.fields)
-#         field_label = form.fields['selected_prediction_model'].label
-#         self.assertTrue(field_label == 'selected prediction model' or field_label is None)
-#
-#     def test_prediction_models_options(self):
-#         form = PredictionModelForm()
-#         self.assertTrue('selected_prediction_model' in form.fields)
-#         choices = form.fields['selected_prediction_model']._choices
-#         self.assertIsNotNone(choices)
-#         for model in PredictionModels:
-#             self.assertTrue((model.name, model.value) in choices)
-#         self.assertEqual(len(choices), len(PredictionModels))
-#
-#     def test_form_created_correct_with_model_names(self):
-#         for model in PredictionModels:
-#             data = {'selected_prediction_model': model.name}
-#             self.assertTrue(PredictionModelForm(data).is_valid())
-#
-#     def test_form_detects_incorrect_input(self):
-#         data = {'selected_prediction_model': "invalid_name"}
-#         self.assertFalse(PredictionModelForm(data).is_valid())
+from django.test import TestCase
+
+from document.forms import DocumentCreationForm, DocumentEditionForm
+
+
+class DocumentCreationFormTest(TestCase):
+    def test_form_contains_title(self):
+        form = DocumentCreationForm()
+        self.assertTrue('title' in form.base_fields)
+
+    def test_form_contains_description(self):
+        form = DocumentCreationForm()
+        self.assertTrue('description' in form.base_fields)
+
+    def test_form_title_is_mandatory(self):
+        form = DocumentCreationForm({'description': 'test_description'})
+        self.assertFalse(form.is_valid())
+
+    def test_form_description_is_not_mandatory(self):
+        form = DocumentCreationForm({'title': 'test_title'})
+        self.assertTrue(form.is_valid())
+
+
+class DocumentEditionFormTest(TestCase):
+    def test_remember_body_label(self):
+        form = DocumentEditionForm()
+        self.assertTrue('body' in form.base_fields)

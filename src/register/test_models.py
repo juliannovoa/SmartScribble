@@ -24,7 +24,7 @@ class SettingsModelTest(TestCase):
     def test_prediction_model_max_length(self):
         field_prediction_model = User.settings.related.related_model.prediction_model
         max_length = field_prediction_model.field.max_length
-        self.assertEqual(max_length, 6)
+        self.assertEqual(max_length, 15)
 
     def test_has_prediction_model(self):
         user = User.objects.create(username='test_user')
