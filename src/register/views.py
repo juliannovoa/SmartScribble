@@ -12,11 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import update_session_auth_hash, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
+from django.urls import reverse
 
 from .forms import RegisterForm, LoginForm, PredictionModelForm
 
@@ -29,7 +30,8 @@ def register_view(request):
         form = RegisterForm(request.POST)
         if form.is_valid():
             usr = form.save()
-            return render(request, 'pages/profile.html', context={'user': usr})
+            login(request, usr)
+            return redirect(reverse('profile'))
     else:
         form = RegisterForm()
 
