@@ -33,9 +33,11 @@ class DocumentCreationForm(forms.ModelForm):
 
 class DocumentEditionForm(forms.ModelForm):
     body = RichTextFormField()
+    id = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
         model = Document
         fields = [
             'body',
+            'id'
         ]

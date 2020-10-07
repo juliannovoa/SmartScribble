@@ -43,9 +43,9 @@ def remove_document_view(request):
 @login_required
 def edit_document_view(request):
     if request.method == 'GET':
-        doc_id = request.GET['doc_id']
+        doc_id = request.GET['id']
     elif request.method == 'POST':
-        doc_id = request.POST['doc_id']
+        doc_id = request.POST['id']
     else:
         return HttpResponseServerError('Wrong request')
 
@@ -56,8 +56,10 @@ def edit_document_view(request):
     if request.method == 'POST':
         form = DocumentEditionForm(request.POST, instance=doc)
         doc = form.save()
-    return render(request, 'document/textEditor.html',
-                  {'form': DocumentEditionForm(initial={'body': doc.body})})
+    data = {'form': DocumentEditionForm(initial={'body': doc.body,
+                                                 'id': doc_id})}
+
+    return render(request, 'document/textEditor.html', data)
 
 
 @login_required
