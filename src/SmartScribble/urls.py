@@ -25,6 +25,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('register/', register_view, name='register'),
     path('login/', CustomLoginView.as_view(), name='login'),
+    path('', CustomLoginView.as_view(), name='initial'),
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     path('profile/', profile_view, name='profile'),
     path('remove/', remove_document_view, name='remove'),
