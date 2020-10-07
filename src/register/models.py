@@ -26,11 +26,12 @@ class PredictionModels(models.TextChoices):
     GPT2 = 'gpt-2'
     BERT = 'bert'
     ALBERT = 'albert'
+    DGPT2 = 'distil-gpt2'
 
 
 class Settings(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
-    prediction_model = models.CharField(max_length=6,
+    prediction_model = models.CharField(max_length=15,
                                         choices=PredictionModels.choices,
                                         default=PredictionModels.GPT2.name)
 
