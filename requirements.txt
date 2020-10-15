@@ -31,5 +31,5 @@ sqlparse==0.3.1
 tokenizers==0.8.1rc2
 torch==1.6.0
 tqdm==4.48.2
-transformers @ git+https://github.com/huggingface/transformers@54c687e97c92efe6eba9e537bd98b47d9005a279
+transformers==3.3.1
 urllib3==1.25.10
