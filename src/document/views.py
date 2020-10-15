@@ -15,11 +15,10 @@
 
 
 # Create your views here.
-import json
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponse, HttpResponseServerError
+from django.http import HttpResponseServerError, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import DocumentEditionForm
@@ -69,6 +68,5 @@ def predict_view(request):
         # Encode a text inputs
         text = request.GET[INPUT_KEY]
         prediction = PredictionService.instance(request.user.settings.prediction_model).get_prediction(text)
-        return HttpResponse(json.dumps({'prediction': prediction}))
-
+        return JsonResponse({'prediction': prediction})
     return HttpResponseServerError('Empty request.')
