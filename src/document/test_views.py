@@ -12,6 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.test import TestCase
@@ -19,6 +20,7 @@ from django.urls import reverse
 
 from document.forms import DocumentEditionForm
 from document.models import Document
+from register.models import PredictionModels
 
 
 class RemoveDocumentViewTest(TestCase):
@@ -187,3 +189,141 @@ class EditDocumentViewTest(TestCase):
         new_doc_pk = new_doc.pk
         response = self.client.post(reverse('edit'), {'id': new_doc_pk})
         self.assertEqual(response.status_code, 403)
+
+
+class PredictViewTest(TestCase):
+    def setUp(self):
+        self.test_user = User.objects.create(username='test_user')
+
+    def test_redirect_if_not_logged(self):
+        response = self.client.get(reverse('edit'))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith('/login/'))
+
+    @patch('document.views.PredictionService')
+    def test_view_url_exists_at_desired_location_with_get(self, prediction_service_mock):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+        prediction_service_mock.instance.return_value.get_prediction.return_value = 'you'
+
+        response = self.client.get('/predict/', data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    @patch('document.views.PredictionService')
+    def test_view_url_accessible_by_name_with_get(self, prediction_service_mock):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+        prediction_service_mock.instance.return_value.get_prediction.return_value = 'you'
+
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+
+    def test_view_throws_500_with_post_request(self):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+
+        response = self.client.post(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 500)
+
+    def test_view_throws_500_with_no_ajax_request(self):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+
+        response = self.client.get(reverse('prediction'), data)
+        self.assertEqual(response.status_code, 500)
+
+    def test_view_throws_500_with_no_input_data_in_request(self):
+        self.client.force_login(self.test_user)
+        data = {
+            'other': 'Hello, how are'
+        }
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 500)
+
+    @patch('document.views.PredictionService')
+    def test_view_returns_json(self, prediction_service_mock):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+        prediction_service_mock.instance.return_value.get_prediction.return_value = 'you'
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        try:
+            response.json()
+        except ValueError:
+            self.fail('Response is not JSON.')
+
+    @patch('document.views.PredictionService')
+    def test_view_returns_prediction_field(self, prediction_service_mock):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+        prediction_service_mock.instance.return_value.get_prediction.return_value = 'you'
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        try:
+            response.json()['prediction']
+        except KeyError:
+            self.fail('Response has not prediction field.')
+
+    @patch('document.views.PredictionService')
+    def test_view_provides_prediction(self, prediction_service_mock):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+        prediction_service_mock.instance.return_value.get_prediction.return_value = 'you'
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()['prediction'], 'you')
+
+    @patch('document.views.PredictionService')
+    def test_view_predicts_with_desired_model(self, prediction_service_mock):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+        prediction_service_mock.instance.return_value.get_prediction.return_value = 'you'
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        prediction_service_mock.instance.assert_called_once_with(self.test_user.settings.prediction_model)
+
+    @patch('document.views.PredictionService')
+    def test_view_predicts_with_desired_model_when_changed(self, prediction_service_mock):
+        self.client.force_login(self.test_user)
+        self.test_user.settings.prediction_model = PredictionModels.GPT2
+        self.test_user.save()
+        data = {
+            'input': 'Hello, how are'
+        }
+        prediction_service_mock.instance.return_value.get_prediction.return_value = 'you'
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        prediction_service_mock.instance.assert_called_once_with(PredictionModels.GPT2.value)
+
+        self.test_user.settings.prediction_model = PredictionModels.BERT
+        self.test_user.save()
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        prediction_service_mock.instance.assert_called_with(PredictionModels.BERT.value)
+
+    @patch('document.views.PredictionService')
+    def test_view_predicts_with_desired_text(self, prediction_service_mock):
+        self.client.force_login(self.test_user)
+        data = {
+            'input': 'Hello, how are'
+        }
+        prediction_service_mock.instance.return_value.get_prediction.return_value = 'you'
+        response = self.client.get(reverse('prediction'), data, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+        self.assertEqual(response.status_code, 200)
+        prediction_service_mock.instance().get_prediction.assert_called_once_with(data['input'])
