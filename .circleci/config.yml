@@ -14,7 +14,6 @@ jobs:
           MYSQL_DATABASE: test_smartscribbledb
           MYSQL_USER: django
           MYSQL_PASSWORD: SmartMariaScribbleDB2000!
-          MYSQL_HOST: localhost
     steps:
       - checkout
   build-and-test:
