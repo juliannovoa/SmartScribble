@@ -14,6 +14,7 @@ future==0.18.2
 idna==2.10
 jmespath==0.10.0
 joblib==0.16.0
+mysqlclient==2.0.1
 numpy==1.19.1
 packaging==20.4
 pyparsing==2.4.7
