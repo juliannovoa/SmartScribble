@@ -43,7 +43,7 @@ workflows:
       - db
         requires:
           -build
-      - test
+      - test:
         requires:
           - build
           - db
