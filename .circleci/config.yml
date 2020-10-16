@@ -38,5 +38,3 @@ workflows:
     jobs:
       - build
       - test
-        requires:
-          - build
