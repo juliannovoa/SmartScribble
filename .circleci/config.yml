@@ -5,6 +5,7 @@ orbs:
 
 jobs:
   db:
+    executor: python/default
     docker:
       - image: circleci/mariadb:latest
         auth:
