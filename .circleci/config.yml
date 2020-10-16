@@ -11,7 +11,6 @@ jobs:
       - python/install-packages:
           pip-dependency-file: requirements.txt
           pkg-manager: pip
-
   db:
     docker:
       - image: circleci/mariadb:latest
@@ -24,7 +23,6 @@ jobs:
           MYSQL_PASSWORD: SmartMariaScribbleDB2000!
     steps:
       - checkout
-
   test:
     executor: python/default
     steps:
@@ -35,14 +33,13 @@ jobs:
             python manage.py test
           name: Test
 
-
 workflows:
   main:
     jobs:
       - build
       - db:
           requires:
-            -build
+            - build
       - test:
           requires:
             - build
