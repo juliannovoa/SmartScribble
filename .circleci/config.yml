@@ -4,20 +4,46 @@ orbs:
   python: circleci/python@1.2.0
 
 jobs:
-  build-and-test:
+  build:
     executor: python/default
     steps:
       - checkout
       - python/install-packages:
           pip-dependency-file: requirements.txt
           pkg-manager: pip
+
+  db:
+    docker:
+      - image: circleci/mariadb:latest
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
+        environment:
+          MYSQL_DATABASE: test_smartscribbledb
+          MYSQL_USER: django
+          MYSQL_PASSWORD: SmartMariaScribbleDB2000!
+    steps:
+      - checkout
+
+  test:
+    executor: python/default
+    steps:
+      - checkout
       - run:
           command: |
             cd src/
             python manage.py test
           name: Test
 
+
 workflows:
   main:
     jobs:
-      - build-and-test
+      - build
+      - db
+        requires:
+          -build
+      - test
+        requires:
+          - build
+          - db
