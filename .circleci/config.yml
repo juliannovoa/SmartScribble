@@ -41,9 +41,9 @@ workflows:
     jobs:
       - build
       - db:
-        requires:
-          -build
+          requires:
+            -build
       - test:
-        requires:
-          - build
-          - db
+          requires:
+            - build
+            - db
