@@ -4,9 +4,13 @@ orbs:
   python: circleci/python@1.2.0
 
 jobs:
-  db:
-    executor: python/default
+
+  build-and-test:
     docker:
+      - image: circleci/python:3.8.6
+          auth:
+            username: mydockerhub-user
+            password: $DOCKERHUB_PASSWORD
       - image: circleci/mariadb:latest
         auth:
           username: mydockerhub-user
@@ -15,10 +19,6 @@ jobs:
           MYSQL_DATABASE: test_smartscribbledb
           MYSQL_USER: django
           MYSQL_PASSWORD: SmartMariaScribbleDB2000!
-    steps:
-      - checkout
-  build-and-test:
-    executor: python/default
     steps:
       - checkout
       - python/install-packages:
@@ -34,7 +34,4 @@ jobs:
 workflows:
   main:
     jobs:
-      - db
-      - build-and-test:
-          requires:
-            - db
+      - build-and-test
