@@ -40,7 +40,7 @@ workflows:
   main:
     jobs:
       - build
-      - db
+      - db:
         requires:
           -build
       - test:
