@@ -7,10 +7,14 @@ jobs:
   build:
     docker:
       - image: circleci/mariadb:latest
+        auth:
+          username: juliannovoa
+          password: $DOCKERHUB_PASSWORD
         environment:
           - MYSQL_DATABASE: test_smartscribbledb
           - MYSQL_USER: django
           - MYSQL_PASSWORD: SmartMariaScribbleDB2000!
+
     executor: python/default
 
     steps:
@@ -34,3 +38,5 @@ workflows:
     jobs:
       - build
       - test
+        requires:
+          - build
