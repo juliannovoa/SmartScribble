@@ -8,9 +8,9 @@ jobs:
   build-and-test:
     docker:
       - image: circleci/python:3.8.6
-          auth:
-            username: mydockerhub-user
-            password: $DOCKERHUB_PASSWORD
+        auth:
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
       - image: circleci/mariadb:latest
         auth:
           username: mydockerhub-user
