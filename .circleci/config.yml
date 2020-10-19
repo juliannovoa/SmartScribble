@@ -13,6 +13,7 @@ jobs:
         environment:
           MYSQL_USER: django
           MYSQL_PASSWORD: SmartMariaScribbleDB2000!
+    executor: python/default
     steps:
       - checkout
       - restore_cache:
