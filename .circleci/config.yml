@@ -26,12 +26,12 @@ jobs:
             - /home/circleci/.cache/pip
             - /home/circleci/.pyenv/versions/
             - /home/circleci/.local/lib/
-            - run:
-                name: Install MySQL CLI; grant user privileges
-                command: |
-                  sudo apt update
-                  sudo apt install mariadb-client
-                  mariadb -h 127.0.0.1 -u django -p SmartMariaScribbleDB2000! --execute="DROP DATABASE test_smartscribbledb"
+      - run:
+          name: Install MySQL CLI; grant user privileges
+          command: |
+            sudo apt update
+            sudo apt install mariadb-client
+            mariadb -h 127.0.0.1 -u django -p SmartMariaScribbleDB2000! --execute="DROP DATABASE test_smartscribbledb"
       - run:
           command: |
             cd src/
