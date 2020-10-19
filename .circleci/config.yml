@@ -17,17 +17,22 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - -pypi-v1-{{ .Branch }}-{{ checksum "~/project/requirements.txt" }}-{{ checksum "/home/circl    eci/.pyenv/version" }}-
+            - -pypi-v1-{{ .Branch }}-{{ checksum "~/project/requirements.txt" }}-{{ checksum "/home/circleci/.pyenv/version" }}-
       - run:
           command: "pip install -r requirements.txt \n"
           name: Install dependencies with pip using project requirements.txt
           working_directory: ~/project
       - save_cache:
-          key: -pypi-v1-{{ .Branch }}-{{ checksum "~/project/requirements.txt" }}-{{ checksum "/home/ci    rcleci/.pyenv/version" }}-
+          key: -pypi-v1-{{ .Branch }}-{{ checksum "~/project/requirements.txt" }}-{{ checksum "/home/circleci/.pyenv/version" }}-
           paths:
             - /home/circleci/.cache/pip
             - /home/circleci/.pyenv/versions/
             - /home/circleci/.local/lib/
+      - run:
+          command: |
+            mysql -u root -p
+            GRANT ALL PRIVILEGES ON test_smartscribbledb.* TO 'django'@'127.0.0.1';
+          name: grant privileges
       - run:
           command: |
             cd src/
