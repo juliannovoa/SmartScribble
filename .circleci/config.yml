@@ -35,7 +35,7 @@ jobs:
       - run:
           command: |
             cd src/
-            python manage.py test -k
+            python manage.py test --keepdb
           name: Test
 
 workflows:
