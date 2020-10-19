@@ -3,10 +3,15 @@ jobs:
   build-and-test:
     docker:
       - image: circleci/python:3.8.6
+          username: mydockerhub-user
+          password: $DOCKERHUB_PASSWORD
       - image: circleci/mariadb:latest
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD
+        environment:
+          MYSQL_USER: django
+          MYSQL_PASSWORD: SmartMariaScribbleDB2000!
     steps:
       - checkout
       - restore_cache:
