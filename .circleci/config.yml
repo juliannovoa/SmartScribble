@@ -13,9 +13,10 @@ jobs:
         environment:
           MYSQL_USER: django
           MYSQL_PASSWORD: SmartMariaScribbleDB2000!
-    executor: python/default
     steps:
       - checkout
+      - run:
+          command: "ls /home/circleci/.pyenv/ \n"
       - restore_cache:
           keys:
             - -pypi-v1-{{ .Branch }}-{{ checksum "~/project/requirements.txt" }}-{{ checksum "/home/circleci/.pyenv/version" }}-
