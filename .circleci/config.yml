@@ -12,8 +12,6 @@ jobs:
           MYSQL_PASSWORD: SmartMariaScribbleDB2000!
     steps:
       - checkout
-      - run:
-          command: "ls -a /home/circleci/ \n"
       - restore_cache:
           keys:
             - -pypi-v1-{{ .Branch }}-{{ checksum "~/project/requirements.txt" }}-{{ checksum "/home/circleci/.pyenv/version" }}-
@@ -27,6 +25,11 @@ jobs:
             - /home/circleci/.cache/pip
             - /home/circleci/.pyenv/versions/
             - /home/circleci/.local/lib/
+      - run:
+          name: Install MySQL CLI; grant user privileges
+          command: |
+            sudo apt-get install default-mysql-client
+            mysql -h 127.0.0.1 -u django -SmartMariaScribbleDB2000! --execute="GRANT ALL PRIVILEGES ON test_smartscribbledb.* TO 'django'@'127.0.0.1'"
       - run:
           command: |
             cd src/
