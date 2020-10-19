@@ -7,10 +7,6 @@ jobs:
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD
-        environment:
-          MYSQL_DATABASE: test_smartscribbledb
-          MYSQL_USER: django
-          MYSQL_PASSWORD: SmartMariaScribbleDB2000!
     steps:
       - checkout
       - restore_cache:
