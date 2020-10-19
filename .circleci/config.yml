@@ -29,11 +29,6 @@ jobs:
             - /home/circleci/.local/lib/
       - run:
           command: |
-            mysql -u root -p
-            GRANT ALL PRIVILEGES ON test_smartscribbledb.* TO 'django'@'127.0.0.1';
-          name: grant privileges
-      - run:
-          command: |
             cd src/
             python manage.py test
           name: Test
