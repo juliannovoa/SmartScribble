@@ -10,6 +10,7 @@ jobs:
         environment:
           MYSQL_USER: django
           MYSQL_PASSWORD: SmartMariaScribbleDB2000!
+          MYSQL_DATABASE: test_smartscribbledb
     steps:
       - checkout
       - restore_cache:
@@ -25,16 +26,16 @@ jobs:
             - /home/circleci/.cache/pip
             - /home/circleci/.pyenv/versions/
             - /home/circleci/.local/lib/
-      - run:
-          name: Install MySQL CLI; grant user privileges
-          command: |
-            sudo apt update
-            sudo apt install mariadb-client
-            mariadb -h 127.0.0.1 -u django -SmartMariaScribbleDB2000! --execute="GRANT ALL PRIVILEGES ON test_smartscribbledb.* TO 'django'@'127.0.0.1'"
+      #      - run:
+      #          name: Install MySQL CLI; grant user privileges
+      #          command: |
+      #            sudo apt update
+      #            sudo apt install mariadb-client
+      #            mariadb -h 127.0.0.1 -u root -p rootpswd --execute="GRANT ALL PRIVILEGES ON test_smartscribbledb.* TO 'django'@'127.0.0.1'"
       - run:
           command: |
             cd src/
-            python manage.py test
+            python manage.py test -k
           name: Test
 
 workflows:
