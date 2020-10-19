@@ -29,9 +29,10 @@ jobs:
       - run:
           name: Install MySQL CLI; grant user privileges
           command: |
-            apt update
-            apt install mariadb-client
-            mariadb -h 127.0.0.1 -u django -p SmartMariaScribbleDB2000! --execute="DROP DATABASE test_smartscribbledb"
+            sudo apt update
+            sudo apt install mariadb-client
+            echo "Deleting database"
+            mariadb -h 127.0.0.1 -u django --password=SmartMariaScribbleDB2000! --execute="DROP DATABASE test_smartscribbledb"
       - run:
           command: |
             cd src/
