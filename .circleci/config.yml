@@ -2,8 +2,8 @@ version: 2.1
 jobs:
   build-and-test:
     docker:
-      - image: cimg/python:3.8
-      - image: circleci/mariadb:latest
+      - image: cimg/python:3.7.4
+      - image: circleci/mariadb:10.1.44
         auth:
           username: mydockerhub-user
           password: $DOCKERHUB_PASSWORD
