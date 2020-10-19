@@ -16,7 +16,7 @@ jobs:
     steps:
       - checkout
       - run:
-          command: "ls /home/circleci/.pyenv/ \n"
+          command: "ls -a /home/circleci/ \n"
       - restore_cache:
           keys:
             - -pypi-v1-{{ .Branch }}-{{ checksum "~/project/requirements.txt" }}-{{ checksum "/home/circleci/.pyenv/version" }}-
