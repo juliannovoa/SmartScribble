@@ -29,10 +29,10 @@ class DocumentModelTest(TestCase):
         self.assertEqual(title_max_length, 50)
 
         title = 'a' * 51
-        document = Document.objects.create(title=title,
-                                           description='test_description',
-                                           body='test_body',
-                                           user=self.test_user)
+        document = Document(title=title,
+                            description='test_description',
+                            body='test_body',
+                            user=self.test_user)
         with self.assertRaises(ValidationError):
             document.full_clean()
 
@@ -41,10 +41,10 @@ class DocumentModelTest(TestCase):
         self.assertEqual(title_max_length, 50)
 
         title = 'a' * 50
-        document = Document.objects.create(title=title,
-                                           description='test_description',
-                                           body='test_body',
-                                           user=self.test_user)
+        document = Document(title=title,
+                            description='test_description',
+                            body='test_body',
+                            user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
@@ -55,10 +55,10 @@ class DocumentModelTest(TestCase):
         self.assertEqual(description_max_length, 100)
 
         description = 'a' * 101
-        document = Document.objects.create(title='test_title',
-                                           description=description,
-                                           body='test_body',
-                                           user=self.test_user)
+        document = Document(title='test_title',
+                            description=description,
+                            body='test_body',
+                            user=self.test_user)
         with self.assertRaises(ValidationError):
             document.full_clean()
 
@@ -67,10 +67,10 @@ class DocumentModelTest(TestCase):
         self.assertEqual(description_max_length, 100)
 
         description = 'a' * 100
-        document = Document.objects.create(title='test_title',
-                                           description=description,
-                                           body='test_body',
-                                           user=self.test_user)
+        document = Document(title='test_title',
+                            description=description,
+                            body='test_body',
+                            user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
@@ -78,17 +78,17 @@ class DocumentModelTest(TestCase):
 
     def test_title_is_mandatory(self):
 
-        document = Document.objects.create(description='test_description',
-                                           body='test_body',
-                                           user=self.test_user)
+        document = Document(description='test_description',
+                            body='test_body',
+                            user=self.test_user)
         with self.assertRaises(ValidationError):
             document.full_clean()
 
     def test_description_is_not_mandatory(self):
 
-        document = Document.objects.create(title='test_title',
-                                           body='test_body',
-                                           user=self.test_user)
+        document = Document(title='test_title',
+                            body='test_body',
+                            user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
@@ -96,9 +96,9 @@ class DocumentModelTest(TestCase):
 
     def test_body_is_not_mandatory(self):
 
-        document = Document.objects.create(title='test_title',
-                                           description='test_description',
-                                           user=self.test_user)
+        document = Document(title='test_title',
+                            description='test_description',
+                            user=self.test_user)
         try:
             document.full_clean()
         except ValidationError:
