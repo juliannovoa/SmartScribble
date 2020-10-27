@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': 'smartscribbledb',
         'USER': 'django',
         'PASSWORD': 'SmartMariaScribbleDB2000!',
-        'HOST': 'localhost',
+        'HOST': '127.0.0.1',
         'PORT': '',
         'TEST': {
             'NAME': 'test_smartscribbledb',
