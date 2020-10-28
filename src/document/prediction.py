@@ -42,19 +42,28 @@ class PredictionModel:
             text = text.rstrip()
         return self._tokenizer(text, return_tensors='pt')
 
+    def _get_predicted_item_position(self, prediction_inputs: BatchEncoding) -> int:
+        if self._need_mask:
+            return torch.nonzero(prediction_inputs['input_ids'][0] == self._tokenizer.mask_token_id,
+                                 as_tuple=False).item()
+        else:
+            return -1
+
     def _predict(self, prediction_inputs: BatchEncoding) -> str:
 
         with torch.no_grad():
             outputs = self._model(**prediction_inputs)
             predictions = outputs[0]
 
-        predicted_index = torch.argmax(predictions[0, -1]).item()
+        predicted_token_index = torch.argmax(
+            predictions[0, self._get_predicted_item_position(prediction_inputs)]).item()
 
         if self._need_mask:
-            predicted_token = self._tokenizer.decode([predicted_index])
+            predicted_token = self._tokenizer.decode([predicted_token_index])
         else:
+
             predicted_sentence = self._tokenizer.decode(
-                prediction_inputs.input_ids.tolist()[0] + [predicted_index])
+                prediction_inputs.input_ids.tolist()[0] + [predicted_token_index])
             predicted_token = predicted_sentence.split()[-1]
 
         return predicted_token
@@ -89,6 +98,7 @@ class PredictionService:
         PredictionModels.DGPT2.name: (GPT2Tokenizer, GPT2LMHeadModel, 'distilgpt2', False),
         PredictionModels.BERT.name: (BertTokenizer, BertForMaskedLM, 'bert-base-cased', True),
         PredictionModels.ALBERT.name: (AlbertTokenizer, AlbertForMaskedLM, 'albert-xxlarge-v2', True),
+        PredictionModels.BERTSP.name: (BertTokenizer, BertForMaskedLM, 'dccuchile/bert-base-spanish-wwm-cased', True),
     }
 
     @staticmethod
