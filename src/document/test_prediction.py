@@ -82,7 +82,7 @@ class PredictionModelTest(TestCase):
         prediction_model = PredictionModel(AlbertTokenizer, AlbertForMaskedLM, 'albert-base-v2', True)
         text = 'How are '
         prediction = prediction_model.get_prediction(text)
-        self.assertEqual(prediction, 'your')
+        self.assertEqual(prediction, 'you')
 
     @patch('document.prediction.PredictionModel._tokenize')
     @patch('document.prediction.PredictionModel._predict')

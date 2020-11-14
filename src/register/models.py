@@ -27,6 +27,7 @@ class PredictionModels(models.TextChoices):
     BERT = 'bert'
     ALBERT = 'albert'
     DGPT2 = 'distil-gpt2'
+    BERTSP = 'bert-sp'
 
 
 class Settings(models.Model):
