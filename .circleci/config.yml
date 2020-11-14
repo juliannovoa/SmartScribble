@@ -1,4 +1,8 @@
 version: 2.1
+
+orbs:
+  heroku: circleci/heroku@0.0.10. # Invoke the Heroku orb
+
 jobs:
   build-and-test:
     docker:
@@ -40,7 +44,12 @@ jobs:
           name: Test
 
 workflows:
-  main:
+  heroku_deploy:
     jobs:
-      - build-and-test
-
+      - build
+      - heroku/deploy-via-git: # Use the pre-configured job, deploy-via-git
+          requires:
+            - build-and-test
+          filters:
+            branches:
+              only: sequential-branch-filter
