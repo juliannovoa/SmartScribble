@@ -40,7 +40,7 @@ jobs:
       - run:
           command: |
             cd src/
-            python manage.py --noinput
+            python manage.py --no-input
             python manage.py test
           name: Test
 
