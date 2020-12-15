@@ -1,1 +1,1 @@
-web: gunicorn --chdir src SmartScribble.wsgi --log-file -
+web: gunicorn --chdir src SmartScribble.wsgi --timeout 120 --log-file -
