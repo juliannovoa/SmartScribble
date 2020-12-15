@@ -96,6 +96,26 @@ if 'ON_HEROKU' not in os.environ:
             },
         }
     }
+else:
+    DATABASE_URL = os.getenv('JAWSDB_MARIA_URL')
+
+    database_attr = DATABASE_URL.split(':')
+
+    JaName = database_attr[3].split('/')[1].rstrip("'")
+    JaUser = database_attr[1].lstrip('//')
+    JaPwrd = database_attr[2].split('@')[0]
+    JaHost = database_attr[2].split('@')[1]
+    JaPort = int(database_attr[3].split('/')[0])
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': JaName,
+            'USER': JaUser,
+            'PASSWORD': JaPwrd,
+            'HOST': JaHost,
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
