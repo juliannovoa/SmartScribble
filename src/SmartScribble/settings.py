@@ -82,19 +82,20 @@ WSGI_APPLICATION = 'SmartScribble.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'smartscribbledb',
-        'USER': 'django',
-        'PASSWORD': 'SmartMariaScribbleDB2000!',
-        'HOST': '127.0.0.1',
-        'PORT': '',
-        'TEST': {
-            'NAME': 'test_smartscribbledb',
-        },
+if 'ON_HEROKU' not in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'smartscribbledb',
+            'USER': 'django',
+            'PASSWORD': 'SmartMariaScribbleDB2000!',
+            'HOST': '127.0.0.1',
+            'PORT': '',
+            'TEST': {
+                'NAME': 'test_smartscribbledb',
+            },
+        }
     }
-}
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
