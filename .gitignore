@@ -12,6 +12,4 @@ bin/
 lib/
 pyvenv.cfg
 *.lock
-src/staticfiles
-!src/staticfiles/static.txt
 
