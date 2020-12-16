@@ -30,7 +30,8 @@ six==1.15.0
 soupsieve==2.0.1
 sqlparse==0.3.1
 tokenizers==0.8.1rc2
-torch==1.6.0
+-f https://download.pytorch.org/whl/torch_stable.html
+torch==1.6.0+cpu
 tqdm==4.48.2
 transformers==3.3.1
 urllib3==1.25.10
