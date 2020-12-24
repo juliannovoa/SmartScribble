@@ -16,18 +16,28 @@
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
+def get_from_environ_or_default(environ_var_name: str, default_value: str) -> str:
+    if environ_var_name in os.environ:
+        return os.environ[environ_var_name]
+    return default_value
+
+
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'i+)-db3v_68ah7-#-qss3vw02$og+cm-6+9_rx4d=9p1)yd#i3'
+SECRET_KEY = get_from_environ_or_default('SECRET_KEY', 'i+)-db3v_68ah7-#-qss3vw02$og+cm-6+9_rx4d=9p1)yd#i3')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
+if "ALLOWED_HOSTS" in os.environ:
+    ALLOWED_HOSTS.append(os.environ["ALLOWED_HOSTS"])
 
 # Application definition
 
@@ -88,7 +98,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'smartscribbledb',
         'USER': 'django',
-        'PASSWORD': 'SmartMariaScribbleDB2000!',
+        'PASSWORD': get_from_environ_or_default('DB_PASSWORD', 'SmartMariaScribbleDB2000!'),
         'HOST': '127.0.0.1',
         'PORT': '',
         'TEST': {
