@@ -10,9 +10,10 @@
 ## Create database
 
 ```mysql
-CREATE DATABASE 'smartscribbledb';
+CREATE DATABASE smartscribbledb;
 CREATE USER 'django'@'%' IDENTIFIED BY 'SmartMariaScribbleDB2000!';
 GRANT ALL ON smartscribbledb.* TO 'django'@'%';
+GRANT ALL ON test_smartscribbledb.* TO 'django'@'%';
 ```
 
 ## Download web app
