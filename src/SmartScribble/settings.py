@@ -147,9 +147,3 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
-
-if 'ON_HEROKU' in os.environ:
-    import django_on_heroku
-
-    django_on_heroku.settings(locals())
-    del DATABASES['default']['OPTIONS']['sslmode']
