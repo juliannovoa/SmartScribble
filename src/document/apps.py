@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 
 from django.apps import AppConfig
@@ -10,7 +11,7 @@ class DocumentConfig(AppConfig):
     def ready(self):
         from register.models import PredictionModels
         from .prediction import PredictionService
-
+        print(os.environ)
         if 'test' not in sys.argv:
             print('not testing')
             logger = logging.getLogger("DocumentConfig")

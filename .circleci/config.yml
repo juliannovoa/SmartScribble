@@ -12,6 +12,7 @@ jobs:
           MYSQL_USER: django
           MYSQL_PASSWORD: SmartMariaScribbleDB2000!
           MYSQL_DATABASE: test_smartscribbledb
+          test: 1
     steps:
       - checkout
       - restore_cache:
