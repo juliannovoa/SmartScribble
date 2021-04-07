@@ -14,4 +14,6 @@ pyvenv.cfg
 *.lock
 src/staticfiles
 !src/staticfiles/static.txt
+.coverage
+src/htmlcov/
 
