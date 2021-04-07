@@ -11,9 +11,8 @@ class DocumentConfig(AppConfig):
     def ready(self):
         from register.models import PredictionModels
         from .prediction import PredictionService
-        print(os.environ)
-        print(sys.argv)
-        if 'test' not in sys.argv:
+
+        if 'test' not in sys.argv or 'test' not in os.environ:
             print('not testing')
             logger = logging.getLogger("DocumentConfig")
             for model in PredictionModels:
