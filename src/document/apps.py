@@ -9,7 +9,7 @@ class DocumentConfig(AppConfig):
 
     def ready(self):
         from register.models import PredictionModels
-        from document.prediction import PredictionService
+        from .prediction import PredictionService
 
         if 'test' not in sys.argv:
             logger = logging.getLogger("DocumentConfig")
