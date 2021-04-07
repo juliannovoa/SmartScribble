@@ -12,6 +12,7 @@ class DocumentConfig(AppConfig):
         from .prediction import PredictionService
 
         if 'test' not in sys.argv:
+            print('not testing')
             logger = logging.getLogger("DocumentConfig")
             for model in PredictionModels:
                 logger.info(f"Preloading model {model.name}")
