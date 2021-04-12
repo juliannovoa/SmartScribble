@@ -23,40 +23,43 @@ Your documents
                         <div class="card-body">
                             <h5 class="card-title">{{ doc.title }}</h5>
                             <p class="card-text">{{ doc.description }}</p>
-                            <div class="btn-group">
-                                <form action="{% url 'edit' %}" method="GET">
-                                    <button type="submit" class="btn btn-sm btn-outline-secondary" name="id"
-                                            value="{{ doc.id }}">Edit
-                                    </button>
-                                </form>
-                                <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal"
-                                        data-target="#deleteModal{{ forloop.counter0 }}">Remove
-                                </button>
-                                <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1"
-                                     role="dialog"
-                                     aria-labelledby="deleteHeader" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="deleteHeader">Delete document</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                        aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p> Are you sure you want to remove the document {{ doc.title }}?</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                        data-dismiss="modal">Back
-                                                </button>
-                                                <form action="{% url 'remove' %}" method="POST">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="btn btn-primary" name="doc_id"
-                                                            value="{{ doc.id }}">Continue
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="btn-group">
+                                    <form action="{% url 'edit' %}" method="GET">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" name="id"
+                                                value="{{ doc.id }}">Edit
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal"
+                                            data-target="#deleteModal{{ forloop.counter0 }}">Remove
+                                        </button>
+                                    </form>
+
+                                    <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="deleteHeader" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteHeader">Delete document</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
                                                     </button>
-                                                </form>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p> Are you sure you want to remove the document {{ doc.title }}?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Back
+                                                    </button>
+                                                    <form action="{% url 'remove' %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-primary" name="doc_id"
+                                                                value="{{ doc.id }}">Continue
+                                                        </button>
+                                                    </form>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -71,7 +74,6 @@ Your documents
                         <div class="card-body">
                             <p class="card-text">Click on the button to create a new document.</p>
                             <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
                                     <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal"
                                             data-target="#creationModal">Create
                                     </button>
@@ -103,7 +105,6 @@ Your documents
                                             </div>
                                         </div>
                                     </div>
-                                </div>
                             </div>
                         </div>
                     </div>
