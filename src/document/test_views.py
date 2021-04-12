@@ -173,7 +173,7 @@ class EditDocumentViewTest(TestCase):
 
     def test_document_does_not_exist(self):
         self.client.force_login(self.test_user)
-        unavailable_doc_pk = 5
+        unavailable_doc_pk = 10
         with self.assertRaises(Document.DoesNotExist):
             Document.objects.get(pk=unavailable_doc_pk)
         response = self.client.get(reverse('edit'), {'id': unavailable_doc_pk})

@@ -16,6 +16,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from django.test import TestCase
+from django.utils import timezone
 
 from document.models import Document
 
@@ -127,3 +128,17 @@ class DocumentModelTest(TestCase):
         self.test_user.delete()
         with self.assertRaises(Document.DoesNotExist):
             Document.objects.get(pk=document_pk)
+
+    def test_document_has_date(self):
+
+        document = Document.objects.create(title='test_title',
+                                           description='test_description',
+                                           body='test_body',
+                                           user=self.test_user)
+        try:
+            document.full_clean()
+        except ValidationError:
+            self.fail('Document is not correct.')
+
+        document.save()
+        self.assertEqual(document.created.date(), timezone.now().date())
