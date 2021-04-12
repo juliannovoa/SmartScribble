@@ -51,7 +51,7 @@ def change_password_view(request):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)
-            return redirect('profile')
+            return redirect('changedata')
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'register/changepswd.html', {'form': form})
@@ -63,7 +63,7 @@ def change_email_view(request):
         form = EmailChangeForm(request.user, request.POST)
         if form.is_valid():
             user = form.save()
-            return redirect('profile')
+            return redirect('changedata')
     else:
         form = EmailChangeForm(request.user)
     return render(request, 'register/changemail.html', {'form': form})
@@ -77,6 +77,7 @@ def change_prediction_model_view(request):
             usr = request.user
             usr.settings.prediction_model = form.cleaned_data['selected_prediction_model']
             usr.settings.save()
+            return redirect('changedata')
     else:
         form = PredictionModelForm()
 

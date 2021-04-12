@@ -151,7 +151,7 @@ class ChangePasswordViewTest(TestCase):
 
         response = self.client.post(reverse('changepswd'), data)
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('profile'))
+        self.assertRedirects(response, reverse('changedata'))
         self.test_user.refresh_from_db()
         self.assertTrue(self.test_user.check_password(new_password))
 
@@ -212,8 +212,7 @@ class ChangePredictionModelViewTest(TestCase):
             data = {'selected_prediction_model': model.name}
             self.assertTrue(PredictionModelForm(data).is_valid())
             response = self.client.post(reverse('changepm'), data)
-            self.assertEqual(response.status_code, 200)
-            self.assertEqual(response.context['pm'], model.name)
+            self.assertEqual(response.status_code, 302)
             self.test_user.refresh_from_db()
             self.assertEqual(self.test_user.settings.prediction_model, model.name)
 
