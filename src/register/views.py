@@ -19,7 +19,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
-from .forms import RegisterForm, LoginForm, PredictionModelForm
+from .forms import RegisterForm, LoginForm, PredictionModelForm, EmailChangeForm
 
 
 # Create your views here.
@@ -55,6 +55,18 @@ def change_password_view(request):
     else:
         form = PasswordChangeForm(request.user)
     return render(request, 'register/changepswd.html', {'form': form})
+
+
+@login_required
+def change_email_view(request):
+    if request.method == 'POST':
+        form = EmailChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            return redirect('profile')
+    else:
+        form = EmailChangeForm(request.user)
+    return render(request, 'register/changemail.html', {'form': form})
 
 
 @login_required

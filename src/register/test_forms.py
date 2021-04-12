@@ -12,10 +12,10 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-
+from django.contrib.auth.models import User
 from django.test import TestCase
 
-from .forms import LoginForm, PredictionModelForm, RegisterForm
+from .forms import LoginForm, PredictionModelForm, RegisterForm, EmailChangeForm
 from .models import PredictionModels
 
 
@@ -62,3 +62,22 @@ class PredictionModelFormTest(TestCase):
     def test_form_detects_incorrect_input(self):
         data = {'selected_prediction_model': "invalid_name"}
         self.assertFalse(PredictionModelForm(data).is_valid())
+
+
+class EmailChangeFormTest(TestCase):
+    def setUp(self):
+        self.test_user = User.objects.create(username='test_user')
+        self.test_user.email = '1@1.com'
+        self.test_user.save()
+
+    def test_field_label(self):
+        form = EmailChangeForm(self.test_user)
+        self.assertTrue('new_email1' in form.fields)
+        self.assertTrue('new_email2' in form.fields)
+
+    def test_fields_required(self):
+        form = EmailChangeForm(self.test_user)
+        self.assertTrue('new_email1' in form.fields)
+        self.assertTrue(form.fields['new_email1'].required)
+        self.assertTrue('new_email2' in form.fields)
+        self.assertTrue(form.fields['new_email2'].required)
