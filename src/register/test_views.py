@@ -17,7 +17,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase
 from django.urls import reverse
 
-from common.util_test import get_logged_users
+from common.util import get_logged_users
 from register.forms import RegisterForm, PredictionModelForm, LoginForm
 from register.models import PredictionModels
 

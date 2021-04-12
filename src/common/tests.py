@@ -47,7 +47,7 @@ from django.contrib.auth.models import User
 from django.test import TestCase, Client
 
 # Create your tests here.
-from common.util_test import get_logged_users
+from common.util import get_logged_users
 
 
 class UtilTestTest(TestCase):
