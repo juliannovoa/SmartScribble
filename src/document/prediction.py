@@ -92,7 +92,6 @@ class PredictionService:
         PredictionModels.DGPT2.name: (GPT2Tokenizer, GPT2LMHeadModel, 'distilgpt2', False),
         PredictionModels.BERT.name: (BertTokenizer, BertForMaskedLM, 'bert-base-cased', True),
         PredictionModels.ALBERT.name: (AlbertTokenizer, AlbertForMaskedLM, 'albert-xxlarge-v2', True),
-        PredictionModels.BERTSP.name: (BertTokenizer, BertForMaskedLM, 'dccuchile/bert-base-spanish-wwm-cased', True),
     }
 
     @staticmethod
