@@ -68,7 +68,5 @@ def predict_view(request):
         # Encode a text inputs
         text = request.GET[INPUT_KEY]
         prediction = PredictionService.instance(request.user.settings.prediction_model).get_prediction(text)
-        print(text)
-        print(prediction)
         return JsonResponse({'prediction': prediction, 'input_text': text})
     return HttpResponseServerError('Empty request.')

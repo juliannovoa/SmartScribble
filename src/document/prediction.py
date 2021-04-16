@@ -78,7 +78,6 @@ class PredictionModel:
     @staticmethod
     def _get_last_word(text: str) -> str:
         if not text:
-            print('empty text')
             return ''
         elif text[-1] == ' ':
             return ' '
@@ -87,7 +86,6 @@ class PredictionModel:
 
     def get_prediction(self, text: str) -> str:
         predicted_sentence = self._predict(text)
-        print(predicted_sentence)
         if not predicted_sentence.startswith(text):
             return ''
 
