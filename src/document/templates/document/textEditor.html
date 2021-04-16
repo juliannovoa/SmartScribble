@@ -15,9 +15,7 @@ Text Editor
         {{ form.media }}
         {{ form | crispy }}
         <button type="submit" class="btn btn-success" onclick="removePrediction()">Save</button>
-    </form>
-    <form action="{% url 'profile' %}">
-        <button type="submit" class="btn btn-success">Return</button>
+        <a class="btn btn-primary"  href="{% url 'profile' %}"> Return </a>
     </form>
 </div>
 
@@ -32,7 +30,7 @@ Text Editor
 
     function getInputForPrediction(pressedKey = "") {
         // Return the input text to be consumed by the prediction model
-        let inputText = CKEDITOR.instances.id_body.document.getBody().$.innerText.trimRight() + pressedKey
+        let inputText = CKEDITOR.instances.id_body.document.getBody().$.textContent.replace(/\n$/, "") + pressedKey
         let lines = inputText.split("\n")
         return lines[lines.length - 1]
     }
