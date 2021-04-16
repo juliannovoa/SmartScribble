@@ -48,23 +48,37 @@ class PredictionModel:
         return torch.nonzero(prediction_inputs['input_ids'][0] == self._tokenizer.mask_token_id,
                              as_tuple=False).item()
 
-    def _predict(self, prediction_inputs: BatchEncoding) -> str:
+    def _predict(self, text: str) -> str:
+        prediction_inputs = self._tokenize(text)
+        if self._need_mask:
+            return self._predict_with_mask(prediction_inputs)
+        else:
+            return self._predict_no_mask(prediction_inputs)
+
+    def _predict_no_mask(self, prediction_inputs: BatchEncoding) -> str:
         with torch.no_grad():
             outputs = self._model(**prediction_inputs)
             predictions = outputs[0]
         predicted_token_index = torch.argmax(
             predictions[0, self._get_predicted_item_position(prediction_inputs)]).item()
-        if self._need_mask:
-            predicted_token = self._tokenizer.decode([predicted_token_index])
-        else:
-            predicted_sentence = self._tokenizer.decode(
-                prediction_inputs.input_ids.tolist()[0] + [predicted_token_index])
-            predicted_token = predicted_sentence.split()[-1]
-        return predicted_token
+        predicted_sentence = self._tokenizer.decode(
+            prediction_inputs.input_ids.tolist()[0] + [predicted_token_index])
+        return predicted_sentence
+
+    def _predict_with_mask(self, prediction_inputs: BatchEncoding) -> str:
+        with torch.no_grad():
+            outputs = self._model(**prediction_inputs)
+            predictions = outputs[0]
+        predicted_token_index = torch.argmax(
+            predictions[0, self._get_predicted_item_position(prediction_inputs)]).item()
+        predicted_sentence = self._tokenizer.decode(
+            prediction_inputs.input_ids.tolist()[0] + [predicted_token_index], skip_special_tokens=True)
+        return ''.join(predicted_sentence.rsplit('.', 1))
 
     @staticmethod
     def _get_last_word(text: str) -> str:
         if not text:
+            print('empty text')
             return ''
         elif text[-1] == ' ':
             return ' '
@@ -72,17 +86,17 @@ class PredictionModel:
         return words[-1] if words[-1] != '&nbsp;' else ' '
 
     def get_prediction(self, text: str) -> str:
-        prediction_inputs = self._tokenize(text)
-        prediction = self._predict(prediction_inputs)
-        last_word = PredictionModel._get_last_word(text)
-        if prediction.startswith(last_word):
-            return prediction[len(last_word):]
-        elif last_word == ' ':
-            return prediction
-        elif self._need_mask:
+        predicted_sentence = self._predict(text)
+        print(predicted_sentence)
+        if not predicted_sentence.startswith(text):
             return ''
+
+        prediction = predicted_sentence[len(text):]
+
+        if prediction.startswith(' '):
+            return "&nbsp;" + prediction.lstrip()
         else:
-            return "&nbsp;" + prediction
+            return prediction
 
 
 class PredictionService:
