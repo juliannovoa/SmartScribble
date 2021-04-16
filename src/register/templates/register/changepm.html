@@ -1,13 +1,24 @@
 {% extends "base.html" %}
+{% load filter %}
 
-{% block title %}Create an Account{% endblock %}
+{% block title %}Change prediction model{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block content %}
 <div class="container">
     <form method="POST" class="form-group">
         {% csrf_token %}
-        {{ form | crispy }}
+        <div class="mt-2 mb-2 list-group">
+          {% for radio in form.selected_prediction_model %}
+          <a class="list-group-item list-group-item-action flex-column align-items-start">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"> {{ radio.tag }} {{radio.choice_label}}</h5>
+              </div>
+              <p class="mb-1">{{ description|get_item:radio.choice_label }}</p>
+          </a>
+          <a class="btn btn-secondary"  href= {{ url|get_item:radio.choice_label }}> More info </a>
+          {% endfor %}
+        </div>
         <button type="submit" class="btn btn-success">Save changes</button>
         <a class="btn btn-primary"  href="{% url 'changedata' %}"> Return </a>
     </form>

@@ -19,6 +19,7 @@ from django.contrib.auth.views import LoginView
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
+from .models import descriptions, more_info
 from .forms import RegisterForm, LoginForm, PredictionModelForm, EmailChangeForm
 
 
@@ -81,4 +82,7 @@ def change_prediction_model_view(request):
     else:
         form = PredictionModelForm()
 
-    return render(request, 'register/changepm.html', {'pm': request.user.settings.prediction_model, 'form': form})
+    return render(request, 'register/changepm.html', {'pm': request.user.settings.prediction_model,
+                                                      'form': form,
+                                                      'description': descriptions,
+                                                      'url': more_info})

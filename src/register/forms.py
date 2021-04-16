@@ -16,6 +16,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
+from django.forms import RadioSelect
 
 from .models import PredictionModels
 
@@ -33,7 +34,7 @@ class LoginForm(AuthenticationForm):
 
 
 class PredictionModelForm(forms.Form):
-    selected_prediction_model = forms.ChoiceField(choices=[(model.name, model.value) for model in PredictionModels])
+    selected_prediction_model = forms.ChoiceField(choices=[(model.name, model.value) for model in PredictionModels], widget=RadioSelect)
 
 
 class EmailChangeForm(forms.Form):

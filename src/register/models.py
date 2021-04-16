@@ -27,7 +27,6 @@ class PredictionModels(models.TextChoices):
     BERT = 'bert'
     ALBERT = 'albert'
     DGPT2 = 'distil-gpt2'
-    BERTSP = 'bert-sp'
 
 
 class Settings(models.Model):
@@ -46,3 +45,22 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.settings.save()
+
+
+descriptions = {
+    'gpt-2': 'Generative Pre-trained Transformer 2 (GPT2) is a language model developed by OpenAI. This version '
+             'includes 82 million parameters.',
+    'bert': 'Bidirectional Encoder Representations from Transformers (BERT) is a language model developed by Google. '
+            'This version includes 109 million parameters.',
+    'albert': 'A Lite BERT (ALBERT) is a language model developed by Google from BERT to improve its performance. '
+              'This version includes 58 million parameters.',
+    'distil-gpt2': 'Distilled version of GPT2. It includes 82 million parameters. It achieves shorter inference times '
+                   'without significant loss of prediction quality.'
+}
+
+more_info = {
+    'gpt-2': 'https://openai.com/blog/better-language-models/',
+    'bert': 'https://ai.googleblog.com/2018/11/open-sourcing-bert-state-of-art-pre.html',
+    'albert': 'https://ai.googleblog.com/2019/12/albert-lite-bert-for-self-supervised.html',
+    'distil-gpt2': 'https://huggingface.co/distilgpt2'
+}
