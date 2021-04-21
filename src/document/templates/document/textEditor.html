@@ -104,7 +104,7 @@ Text Editor
     }
 
     function processKeyPress(event) {
-        let key = String.fromCharCode(event.data.getKey())
+        let key = event.data.$.key
         let currentPrediction = getPredictionElement()
         if (currentPrediction != null) {
             let currentPredictionText = currentPrediction.getText()
@@ -117,8 +117,26 @@ Text Editor
         sendPredictionRequest(key)
     }
 
+    function printable(event) {
+        const keycode = event.data.getKey();
+
+        const valid =
+            (keycode > 47 && keycode < 58) || // number keys
+            keycode == 32 || keycode == 13 || // spacebar & return key(s)
+            (keycode > 64 && keycode < 91) || // letter keys
+            (keycode > 95 && keycode < 112) || // numpad keys
+            (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
+            (keycode > 218 && keycode < 223);   // [\]' (in order)
+
+    return valid;
+
+    }
+
     function processKeyDown(event) {
         // Remove suggestion if del key is pressed.
+        if (printable(event)){
+            processKeyPress(event)
+        }
         if (event.data.getKey() === 8) {
             removePrediction()
         }
@@ -145,7 +163,6 @@ Text Editor
     }
 
     CKEDITOR.on('instanceReady', function (e) {
-        CKEDITOR.instances.id_body.document.on('keypress', processKeyPress)
         CKEDITOR.instances.id_body.document.on('keyup', processKeyUp)
         CKEDITOR.instances.id_body.document.on('keydown', processKeyDown)
         CKEDITOR.instances.id_body.document.on('click', removePrediction)
