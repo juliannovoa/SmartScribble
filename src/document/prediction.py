@@ -111,9 +111,8 @@ class PredictionService:
         if prediction_model not in PredictionService.__params:
             raise ValueError()
         if prediction_model not in PredictionService.__instances:
-            with FileLock(LOCK_FILE).acquire(timeout=LOCK_TIMEOUT):
-                if prediction_model not in PredictionService.__instances:
-                    PredictionService.__instances[prediction_model] = PredictionService._create(prediction_model)
+            if prediction_model not in PredictionService.__instances:
+                PredictionService.__instances[prediction_model] = PredictionService._create(prediction_model)
         return PredictionService.__instances[prediction_model]
 
     @staticmethod
