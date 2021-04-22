@@ -72,12 +72,17 @@ def predict_view(request):
         return JsonResponse({'prediction': prediction, 'input_text': text})
     return HttpResponseServerError('Empty request.')
 
+
 @login_required
 def full_predict_view(request):
     INPUT_KEY = 'input'
     if request.method == 'GET' and request.is_ajax() and INPUT_KEY in request.GET:
         # Encode a text inputs
         text = request.GET[INPUT_KEY]
-        prediction = PredictionService.instance(PredictionModels.GPT2.name).get_full_prediction(text)
+        if request.user.settings.prediction_model == PredictionModels.GPT2.name:
+            predictor = PredictionModels.GPT2.name
+        else:
+            predictor = PredictionModels.DGPT2.name
+        prediction = PredictionService.instance(predictor).get_full_prediction(text)
         return JsonResponse({'prediction': prediction, 'input_text': text})
     return HttpResponseServerError('Empty request.')
