@@ -12,11 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+import re
 
 import torch
 from filelock import FileLock
 from transformers import AlbertTokenizer, AlbertForMaskedLM, GPT2Tokenizer, GPT2LMHeadModel, BertTokenizer, \
-    BertForMaskedLM, BatchEncoding
+    BertForMaskedLM, BatchEncoding, pipeline
 from transformers.utils import logging
 
 from register.models import PredictionModels
@@ -95,6 +96,20 @@ class PredictionModel:
             return "&nbsp;" + prediction.lstrip()
         else:
             return prediction
+
+    def get_full_prediction(self, text: str) -> str:
+        generator = pipeline('text-generation', model=self._model, tokenizer=self._tokenizer)
+        prediction = generator(text, num_return_sequences=1, no_repeat_ngram_size=2, max_length=len(text)+20,
+                               early_stopping=True, num_beams=5)[0]['generated_text']
+        last_point = prediction.rfind('.')
+        if last_point != -1:
+            output = prediction[len(text):last_point+1]
+        else:
+            output = prediction[len(text):]
+        if output.startswith(' '):
+            return "&nbsp;" + output.lstrip()
+        else:
+            return output
 
 
 class PredictionService:

@@ -16,6 +16,7 @@ Text Editor
         {{ form | crispy }}
         <button type="submit" class="btn btn-success" onclick="removePrediction()">Save</button>
         <a class="btn btn-primary"  href="{% url 'profile' %}"> Return </a>
+        <button class="btn btn-secondary" type="button" onclick="sendCompleteRequest()" id="complete"> Complete </button>
     </form>
 </div>
 
@@ -23,6 +24,7 @@ Text Editor
 
 {% block scripts %}
 <script>
+    var lastSpace = false
 
     function getPredictionElement() {
         return CKEDITOR.instances.id_body.document.getById('prediction')
@@ -30,9 +32,15 @@ Text Editor
 
     function getInputForPrediction(pressedKey = "") {
         // Return the input text to be consumed by the prediction model
-        let inputText = CKEDITOR.instances.id_body.document.getBody().$.textContent.replace(/\n$/, "") + pressedKey
+        let inputText = CKEDITOR.instances.id_body.document.getBody().$.innerText.replace(/\n$/, "").replace(/\u200B/g,'', "")
+        lastSpace ? inputText += ' ' + pressedKey : inputText += pressedKey
         let lines = inputText.split("\n")
         return lines[lines.length - 1]
+    }
+
+    function getInputForComplete() {
+        // Return the input text to be consumed by the prediction model
+        return CKEDITOR.instances.id_body.document.getBody().$.innerText.replace(/\n$/, "").replace(/\u200B/g,'', "")
     }
 
     function isPredictionValid(prediction_input) {
@@ -66,6 +74,10 @@ Text Editor
         insertPrediction(response.prediction)
     }
 
+    function processResponseComplete(response) {
+        insertPrediction(response.prediction)
+    }
+
     function predictionMatchesKey(prediction, key) {
         // normalize
         if (prediction.length === 0) {
@@ -74,6 +86,7 @@ Text Editor
         let normalizedPrediction = prediction[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
         if (key === " ") {
             return prediction.startsWith(String.fromCharCode(160))
+
         }
         return prediction[0].toLowerCase().valueOf() === key.toLowerCase().valueOf()
     }
@@ -122,7 +135,7 @@ Text Editor
 
         const valid =
             (keycode > 47 && keycode < 58) || // number keys
-            keycode == 32 || keycode == 13 || // spacebar & return key(s)
+            (keycode === 32 || keycode === 13) || // spacebar & return key(s)
             (keycode > 64 && keycode < 91) || // letter keys
             (keycode > 95 && keycode < 112) || // numpad keys
             (keycode > 185 && keycode < 193) || // ;=,-./` (in order)
@@ -130,6 +143,27 @@ Text Editor
 
     return valid;
 
+    }
+
+    function sendCompleteRequest(){
+        $("#complete").attr("disabled", true);
+        removePrediction()
+        $.ajax({
+            url: "{% url 'complete_prediction' %}",
+            data: {
+                input: getInputForComplete()
+            },
+            dataType: 'json',
+            success: function (response) {
+                processResponseComplete(response)
+                $("#complete").attr("disabled", false);
+            },
+
+        });
+    }
+
+    function updateLastChar(event) {
+        lastSpace = event.data.getKey() === 32
     }
 
     function processKeyDown(event) {
@@ -146,6 +180,7 @@ Text Editor
             }
             acceptPrediction()
         }
+        updateLastChar(event)
 
     }
 

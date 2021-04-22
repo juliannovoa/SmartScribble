@@ -24,6 +24,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import DocumentEditionForm
 from .models import Document
 from .prediction import PredictionService
+from register.models import PredictionModels
 
 
 @login_required
@@ -68,5 +69,15 @@ def predict_view(request):
         # Encode a text inputs
         text = request.GET[INPUT_KEY]
         prediction = PredictionService.instance(request.user.settings.prediction_model).get_prediction(text)
+        return JsonResponse({'prediction': prediction, 'input_text': text})
+    return HttpResponseServerError('Empty request.')
+
+@login_required
+def full_predict_view(request):
+    INPUT_KEY = 'input'
+    if request.method == 'GET' and request.is_ajax() and INPUT_KEY in request.GET:
+        # Encode a text inputs
+        text = request.GET[INPUT_KEY]
+        prediction = PredictionService.instance(PredictionModels.GPT2.name).get_full_prediction(text)
         return JsonResponse({'prediction': prediction, 'input_text': text})
     return HttpResponseServerError('Empty request.')
