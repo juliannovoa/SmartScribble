@@ -16,59 +16,9 @@ Your documents
     </section>
     <div class="album py-5 bg-light">
         <div class="container">
+            <button type="button" class="btn btn-outline-dark mb-3" id="btnSort">Sort by name</button>
+            <button type="button" class="btn btn-outline-dark mb-3" id="btnSort2">Sort by date</button>
             <div class="row">
-                {% for doc in docs %}
-                <div class="col col-xs-8 col-sm-6 col-md-4 col-lg-3 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ doc.title }}</h5>
-                            <p class="card-text">{{ doc.description }}</p>
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div class="btn-group">
-                                    <form action="{% url 'edit' %}" method="GET">
-                                        <button type="submit" class="btn btn-sm btn-outline-secondary" name="id"
-                                                value="{{ doc.id }}">Edit
-                                        </button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal"
-                                            data-target="#deleteModal{{ forloop.counter0 }}">Remove
-                                        </button>
-                                    </form>
-
-                                    <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1"
-                                         role="dialog"
-                                         aria-labelledby="deleteHeader" aria-hidden="true">
-                                        <div class="modal-dialog">
-                                            <div class="modal-content">
-                                                <div class="modal-header">
-                                                    <h5 class="modal-title" id="deleteHeader">Delete document</h5>
-                                                    <button type="button" class="close" data-dismiss="modal"
-                                                            aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                <div class="modal-body">
-                                                    <p> Are you sure you want to remove the document {{ doc.title }}?</p>
-                                                </div>
-                                                <div class="modal-footer">
-                                                    <button type="button" class="btn btn-secondary"
-                                                            data-dismiss="modal">Back
-                                                    </button>
-                                                    <form action="{% url 'remove' %}" method="POST">
-                                                        {% csrf_token %}
-                                                        <button type="submit" class="btn btn-primary" name="doc_id"
-                                                                value="{{ doc.id }}">Continue
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
                 <div class="col col-xs-12 col-sm-6 col-md-4 col-lg-3 mb-4">
                     <div class="card">
                         <div class="card-body">
@@ -109,8 +59,86 @@ Your documents
                         </div>
                     </div>
                 </div>
+                {% for doc in docs %}
+                <div class="col col-xs-8 col-sm-6 col-md-4 col-lg-3 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ doc.title }}</h5>
+                            <p class="card-text">{{ doc.description }}</p>
+                            <small class="text-muted mb-2">Created: {{doc.created|date:'Y-m-d H:i'}}</small>
+                            <div class="d-flex justify-content-between align-items-center">
+
+                                    <form action="{% url 'edit' %}" method="GET">
+                                        <div class="btn-group">
+                                        <button type="submit" class="btn btn-sm btn-outline-secondary" name="id"
+                                                value="{{ doc.id }}">Edit
+                                        </button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary" data-toggle="modal"
+                                            data-target="#deleteModal{{ forloop.counter0 }}">Remove
+                                        </button>
+                                        </div>
+                                    </form>
+                                    <div class="modal fade" id="deleteModal{{ forloop.counter0 }}" tabindex="-1"
+                                         role="dialog"
+                                         aria-labelledby="deleteHeader" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteHeader">Delete document</h5>
+                                                    <button type="button" class="close" data-dismiss="modal"
+                                                            aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <p> Are you sure you want to remove the document {{ doc.title }}?</p>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary"
+                                                            data-dismiss="modal">Back
+                                                    </button>
+                                                    <form action="{% url 'remove' %}" method="POST">
+                                                        {% csrf_token %}
+                                                        <button type="submit" class="btn btn-primary" name="doc_id"
+                                                                value="{{ doc.id }}">Continue
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
 </main>
+{% endblock %}
+
+{% block scripts %}
+<script>
+
+    $('#btnSort').click(function (){
+        $('.row .col-md-4').sort(function(a,b) {
+            if($(a).find(".card-title").text() === $(b).find(".card-title").text()) return 0;
+            if($(a).find(".card-title").text() === 'Click on the button to create a new document.') return 1;
+            if($(b).find(".card-title").text() === 'Click on the button to create a new document.') return -1;
+            return $(a).find(".card-title").text() > $(b).find(".card-title").text() ? 1 : -1;
+        }).appendTo(".row");
+    })
+
+    $('#btnSort2').click(function (){
+        $('.row .col-md-4').sort(function(a,b) {
+            if($(a).find(".card-title").text() === 'Click on the button to create a new document.') return 1;
+            if($(b).find(".card-title").text() === 'Click on the button to create a new document.') return -1;
+            return $(a).find(".text-muted").text() > $(b).find(".text-muted").text() ? 1 : -1;
+        }).appendTo(".row");
+    })
+
+</script>
 {% endblock %}
