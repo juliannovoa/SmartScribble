@@ -37,7 +37,7 @@ urlpatterns = [
     path('full_predict/', full_predict_view, name='complete_prediction'),
     path('changepm/', change_prediction_model_view, name='changepm'),
     path('changemail/', change_email_view, name='changemail'),
-    path('remove_user/', remove_user_view, name='remove'),
+    path('remove_user/', remove_user_view, name='remove_user'),
 
 
 ]
