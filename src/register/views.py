@@ -15,8 +15,10 @@
 from django.contrib.auth import update_session_auth_hash, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
-from django.shortcuts import render, redirect
+from django.http import HttpResponseServerError
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 
 from .models import descriptions, more_info
@@ -86,3 +88,15 @@ def change_prediction_model_view(request):
                                                       'form': form,
                                                       'description': descriptions,
                                                       'url': more_info})
+
+
+
+@login_required
+def remove_user_view(request):
+    usr = get_object_or_404(User, pk=request.user.pk)
+    try:
+        usr.delete()
+    except Exception:
+        return HttpResponseServerError('Error. User was not removed.')
+
+    return redirect('initial')

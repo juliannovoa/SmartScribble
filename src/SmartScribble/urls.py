@@ -19,7 +19,7 @@ from django.urls import path
 
 from document.views import remove_document_view, edit_document_view, predict_view, full_predict_view
 from pages.views import profile_view, change_data_view
-from register.views import register_view, CustomLoginView, change_password_view, change_prediction_model_view, change_email_view
+from register.views import register_view, CustomLoginView, change_password_view, change_prediction_model_view, change_email_view, remove_user_view
 
 
 urlpatterns = [
@@ -37,6 +37,7 @@ urlpatterns = [
     path('full_predict/', full_predict_view, name='complete_prediction'),
     path('changepm/', change_prediction_model_view, name='changepm'),
     path('changemail/', change_email_view, name='changemail'),
+    path('remove_user/', remove_user_view, name='remove'),
 
 
 ]

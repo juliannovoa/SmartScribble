@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Create an Account{% endblock %}
+{% block title %}Change data{% endblock %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -33,15 +33,37 @@
                 <p><a class="btn btn btn-primary" href="{% url 'changepswd'%}" role="button">Go &raquo;</a></p>
             </div>
             <div class="col-md-6">
+                <h2>Delete user account</h2>
+                <p>If you wish to delete your account, click on this button.</p>
+                <p><button class="btn btn btn-primary" data-toggle="modal" data-target="#deleteModal">Go &raquo;</button></p>
+            </div>
+            <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog"
+                 aria-labelledby="creationHeader" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="creationHeader">Delete Account</h5>
+                            <button type="button" class="close" data-dismiss="modal"
+                                    aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Are you sure?</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <a type="submit" class="btn btn-danger" href="{% url 'remove' %}">Delete</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
                 <h2>Return to profile</h2>
                 <p>If you wish to return to your profile, click on this button.</p>
                 <p><a class="btn btn btn-primary" href="{% url 'profile' %}" role="button">Go &raquo;</a></p>
             </div>
-
         </div>
-
-
-        <hr>
 
     </div>
 
