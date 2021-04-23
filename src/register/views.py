@@ -24,6 +24,8 @@ from django.urls import reverse
 from .models import descriptions, more_info
 from .forms import RegisterForm, LoginForm, PredictionModelForm, EmailChangeForm
 
+SESSION_TIME_NOT_REMEMBER = 0
+SESSION_TIME_REMEMBER = 7*24*60*60
 
 # Create your views here.
 def register_view(request):
@@ -45,6 +47,14 @@ class CustomLoginView(LoginView):
     redirect_authenticated_user = True
     template_name = 'register/login.html'
     authentication_form = LoginForm
+
+    def form_valid(self, form):
+        remember = form.data.get('remember_me', False)
+        if remember:
+            self.request.session.set_expiry(SESSION_TIME_REMEMBER)
+        else:
+            self.request.session.set_expiry(SESSION_TIME_NOT_REMEMBER)
+        return super(CustomLoginView, self).form_valid(form)
 
 
 @login_required
