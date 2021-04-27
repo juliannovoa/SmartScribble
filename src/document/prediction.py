@@ -74,7 +74,6 @@ class PredictionModel:
             predictions[0, self._get_predicted_item_position(prediction_inputs)]).item()
         predicted_sentence = self._tokenizer.decode(
             prediction_inputs.input_ids.tolist()[0] + [predicted_token_index], skip_special_tokens=True)
-        print(predicted_sentence)
         return ''.join(predicted_sentence.rsplit('.', 1))
 
     @staticmethod

@@ -127,7 +127,7 @@ class ChangeDataViewTest(TestCase):
     def test_view_url_accessible_by_name(self):
         self.client.force_login(self.test_user)
         response = self.client.post(reverse('changedata'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 302)
 
     def test_view_uses_correct_template(self):
         self.client.force_login(self.test_user)
