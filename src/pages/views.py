@@ -13,7 +13,9 @@
 #  limitations under the License.
 #
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
+from django.contrib.auth.models import User
+from django.http import HttpResponseServerError
+from django.shortcuts import render, redirect, get_object_or_404
 
 from document.forms import DocumentCreationForm
 from document.models import Document
@@ -36,4 +38,11 @@ def profile_view(request):
 
 @login_required
 def change_data_view(request):
+    if request.method == "POST":
+        usr = get_object_or_404(User, pk=request.user.pk)
+        try:
+            usr.delete()
+        except Exception:
+            return HttpResponseServerError('Error. User was not removed.')
+        return redirect('initial')
     return render(request, "pages/changedata.html")

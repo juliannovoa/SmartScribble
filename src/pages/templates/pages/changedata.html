@@ -52,8 +52,11 @@
                             <p>Are you sure?</p>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                            <a type="submit" class="btn btn-danger" href="{% url 'remove_user' %}">Delete</a>
+                            <form method="POST">
+                                {% csrf_token %}
+                                <a type="button" class="btn btn-secondary" data-dismiss="modal">Close</a>
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
