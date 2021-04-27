@@ -32,7 +32,7 @@ Text Editor
 
     function getInputForPrediction(pressedKey = "") {
         // Return the input text to be consumed by the prediction model
-        let inputText = CKEDITOR.instances.id_body.document.getBody().$.innerText.replace(/\n$/, "").replace(/\u200B/g,'', "")
+        let inputText = CKEDITOR.instances.id_body.document.getBody().$.innerText.replace(/\n$/, "").replace(/\u200B/g,'').replace(/\u00a0/g, ' ')
         lastSpace ? inputText += ' ' + pressedKey : inputText += pressedKey
         let lines = inputText.split("\n")
         return lines[lines.length - 1]
@@ -40,7 +40,7 @@ Text Editor
 
     function getInputForComplete() {
         // Return the input text to be consumed by the prediction model
-        return CKEDITOR.instances.id_body.document.getBody().$.innerText.replace(/\n$/, "").replace(/\u200B/g,'', "")
+        return CKEDITOR.instances.id_body.document.getBody().$.innerText.replace(/\n$/, "").replace(/\u200B/g,'')
     }
 
     function isPredictionValid(prediction_input) {
@@ -113,6 +113,7 @@ Text Editor
             editor.insertText(currentPredictionText)
             currentPrediction.remove()
         }
+        lastSpace = false
         sendPredictionRequest()
     }
 

@@ -74,6 +74,7 @@ class PredictionModel:
             predictions[0, self._get_predicted_item_position(prediction_inputs)]).item()
         predicted_sentence = self._tokenizer.decode(
             prediction_inputs.input_ids.tolist()[0] + [predicted_token_index], skip_special_tokens=True)
+        print(predicted_sentence)
         return ''.join(predicted_sentence.rsplit('.', 1))
 
     @staticmethod
@@ -87,7 +88,8 @@ class PredictionModel:
 
     def get_prediction(self, text: str) -> str:
         predicted_sentence = self._predict(text)
-        if not predicted_sentence.startswith(text):
+
+        if not predicted_sentence.lower().startswith(text.lower()):
             return ''
 
         prediction = predicted_sentence[len(text):]
@@ -118,7 +120,7 @@ class PredictionService:
         PredictionModels.GPT2.name: (GPT2Tokenizer, GPT2LMHeadModel, 'gpt2-medium', False),
         PredictionModels.DGPT2.name: (GPT2Tokenizer, GPT2LMHeadModel, 'distilgpt2', False),
         PredictionModels.BERT.name: (BertTokenizer, BertForMaskedLM, 'bert-base-cased', True),
-        PredictionModels.ALBERT.name: (AlbertTokenizer, AlbertForMaskedLM, 'albert-xxlarge-v2', True),
+        PredictionModels.ALBERT.name: (AlbertTokenizer, AlbertForMaskedLM, 'albert-large-v2', True),
     }
 
     @staticmethod
