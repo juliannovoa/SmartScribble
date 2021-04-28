@@ -147,3 +147,5 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'login'
 LOGIN_URL = 'login'
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'

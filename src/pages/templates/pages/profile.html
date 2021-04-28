@@ -11,7 +11,11 @@ Your documents
         <div class="container">
             <h1>Your Documents</h1>
             <p class="lead text-muted"> Here you can find a list of the created documents.</p>
-            <p><a class="btn btn-primary" href="{% url 'changedata' %}" role="button">Change data &raquo;</a></p>
+            <div class="d-flex justify-content-center">
+                 <a class="btn btn-primary mr-1" href="{% url 'changedata' %}" role="button">Change personal data &raquo;</a>
+                 <a class="btn btn-primary ml-1" href="{% url 'changepm' %}" role="button">Change prediction model &raquo;</a>
+            </div>
+            <p></p>
         </div>
     </section>
     <div class="album py-5 bg-light">

@@ -90,7 +90,7 @@ def change_prediction_model_view(request):
             usr = request.user
             usr.settings.prediction_model = form.cleaned_data['selected_prediction_model']
             usr.settings.save()
-            return redirect('changedata')
+            return redirect('profile')
     else:
         form = PredictionModelForm()
 
