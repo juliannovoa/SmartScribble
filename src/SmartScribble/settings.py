@@ -98,8 +98,8 @@ WSGI_APPLICATION = 'SmartScribble.wsgi.application'
 if "USE_SQLITE" in os.environ:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': 'smartscribbledb',
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': 'mydatabase',
         }
     }
 else:
