@@ -40,7 +40,7 @@ if "ALLOWED_HOSTS" in os.environ:
     ALLOWED_HOSTS.append(os.environ["ALLOWED_HOSTS"])
 
 if "USE_SQLITE" in os.environ:
-    ALLOWED_HOSTS.append(os.environ["*"])
+    ALLOWED_HOSTS.append("*")
 
 # Application definition
 
