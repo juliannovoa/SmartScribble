@@ -39,6 +39,9 @@ ALLOWED_HOSTS = []
 if "ALLOWED_HOSTS" in os.environ:
     ALLOWED_HOSTS.append(os.environ["ALLOWED_HOSTS"])
 
+if "USE_SQLITE" in os.environ:
+    ALLOWED_HOSTS.append(os.environ["*"])
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -92,20 +95,27 @@ WSGI_APPLICATION = 'SmartScribble.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'smartscribbledb',
-        'USER': 'django',
-        'PASSWORD': get_from_environ_or_default('DB_PASSWORD', 'SmartMariaScribbleDB2000!'),
-        'HOST': '127.0.0.1',
-        'PORT': '',
-        'TEST': {
-            'NAME': 'test_smartscribbledb',
-        },
+if "USE_SQLITE" in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'smartscribbledb',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': 'smartscribbledb',
+            'USER': 'django',
+            'PASSWORD': get_from_environ_or_default('DB_PASSWORD', 'SmartMariaScribbleDB2000!'),
+            'HOST': '127.0.0.1',
+            'PORT': '',
+            'TEST': {
+                'NAME': 'test_smartscribbledb',
+            },
+        }
+    }
 
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
