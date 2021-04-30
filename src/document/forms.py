@@ -21,7 +21,8 @@ from .models import Document
 
 class DocumentCreationForm(forms.ModelForm):
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Your title'}))
-    description = forms.CharField(required=False, widget=forms.Textarea())
+    description = forms.CharField(required=False,
+                                  widget=forms.TextInput(attrs={'placeholder': 'Description (optional)'}))
 
     class Meta:
         model = Document
@@ -32,7 +33,7 @@ class DocumentCreationForm(forms.ModelForm):
 
 
 class DocumentEditionForm(forms.ModelForm):
-    body = RichTextFormField()
+    body = RichTextFormField(label="", required=False)
     id = forms.CharField(widget=forms.HiddenInput())
 
     class Meta:
@@ -40,4 +41,29 @@ class DocumentEditionForm(forms.ModelForm):
         fields = [
             'body',
             'id'
+        ]
+
+
+class ChangeNameDocumentForm(forms.ModelForm):
+    title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'New title'}))
+    id = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = Document
+        fields = [
+            'title',
+            'id',
+        ]
+
+
+class ChangeDescriptionDocumentForm(forms.ModelForm):
+    description = forms.CharField(required=False,
+                                  widget=forms.TextInput(attrs={'placeholder': 'New description'}))
+    id = forms.CharField(widget=forms.HiddenInput())
+
+    class Meta:
+        model = Document
+        fields = [
+            'description',
+            'id',
         ]

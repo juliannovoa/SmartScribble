@@ -18,10 +18,10 @@
 
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.http import HttpResponseServerError, JsonResponse
+from django.http import HttpResponseServerError, JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import DocumentEditionForm
+from .forms import DocumentEditionForm, ChangeNameDocumentForm, ChangeDescriptionDocumentForm
 from .models import Document
 from .prediction import PredictionService
 from register.models import PredictionModels
@@ -54,12 +54,33 @@ def edit_document_view(request):
         raise PermissionDenied
 
     if request.method == 'POST':
-        form = DocumentEditionForm(request.POST, instance=doc)
-        doc = form.save()
-    data = {'form': DocumentEditionForm(initial={'body': doc.body,
-                                                 'id': doc_id})}
+        if 'title' in request.POST:
+            form = ChangeNameDocumentForm(request.POST, instance=doc)
+            doc = form.save()
+        elif 'description' in request.POST:
+            form = ChangeDescriptionDocumentForm(request.POST, instance=doc)
+            doc = form.save()
+        else:
+            return HttpResponseServerError('Error')
+    data = {'formEdit': DocumentEditionForm(initial={'body': doc.body, 'id': doc_id}),
+            'formName': ChangeNameDocumentForm(initial={'id': doc_id}),
+            'formDescription': ChangeDescriptionDocumentForm(initial={'id': doc_id}),
+            'title': doc.title,
+            'description': doc.description, }
 
     return render(request, 'document/textEditor.html', data)
+
+
+@login_required
+def save_document_view(request):
+    if request.method == 'POST':
+        doc_id = request.POST['id']
+        doc = get_object_or_404(Document, pk=doc_id)
+        form = DocumentEditionForm(request.POST, instance=doc)
+        doc = form.save()
+        return HttpResponse('Saved')
+    else:
+        return HttpResponseServerError('Error saving')
 
 
 @login_required
