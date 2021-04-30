@@ -112,34 +112,40 @@ class EditDocumentViewTest(TestCase):
         self.client.force_login(self.test_user)
         response = self.client.get(reverse('edit'), {'id': self.test_doc.pk})
         self.assertEqual(response.status_code, 200)
-        form = response.context['form']
+        form = response.context['formEdit']
         self.assertTrue(isinstance(form, DocumentEditionForm))
 
     def test_view_uses_form_with_desired_data_with_get(self):
         self.client.force_login(self.test_user)
         response = self.client.get(reverse('edit'), {'id': self.test_doc.pk})
         self.assertEqual(response.status_code, 200)
-        form = response.context['form']
+        form = response.context['formEdit']
         self.assertEqual(form.initial["body"], 'test_body')
 
     def test_view_url_exists_at_desired_location_with_post(self):
         self.client.force_login(self.test_user)
         data = {'id': self.test_doc.pk,
-                'body': 'new_body'}
+                'body': 'new_body',
+                'title': 'title',
+                'description': 'description'}
         response = self.client.post('/edit/', data)
         self.assertEqual(response.status_code, 200)
 
     def test_view_url_accessible_by_name_with_post(self):
         self.client.force_login(self.test_user)
         data = {'id': self.test_doc.pk,
-                'body': 'new_body'}
+                'body': 'new_body',
+                'title': 'title',
+                'description': 'description'}
         response = self.client.post(reverse('edit'), data)
         self.assertEqual(response.status_code, 200)
 
     def test_view_uses_correct_template_with_post(self):
         self.client.force_login(self.test_user)
         data = {'id': self.test_doc.pk,
-                'body': 'new_body'}
+                'body': 'new_body',
+                'title': 'title',
+                'description': 'description'}
         response = self.client.post(reverse('edit'), data)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'document/textEditor.html')
@@ -147,29 +153,35 @@ class EditDocumentViewTest(TestCase):
     def test_view_uses_correct_form_with_post(self):
         self.client.force_login(self.test_user)
         data = {'id': self.test_doc.pk,
-                'body': 'new_body'}
+                'body': 'new_body',
+                'title': 'title',
+                'description': 'description'}
         response = self.client.post(reverse('edit'), data)
         self.assertEqual(response.status_code, 200)
-        form = response.context['form']
+        form = response.context['formEdit']
         self.assertTrue(isinstance(form, DocumentEditionForm))
 
     def test_view_uses_form_with_desired_data_with_post(self):
         self.client.force_login(self.test_user)
         data = {'id': self.test_doc.pk,
-                'body': 'new_body'}
+                'body': 'new_body',
+                'title': 'title',
+                'description': 'description'}
         response = self.client.post(reverse('edit'), data)
         self.assertEqual(response.status_code, 200)
-        form = response.context['form']
-        self.assertEqual(form.initial["body"], 'new_body')
+        form = response.context['formEdit']
+        self.assertEqual(form.initial["body"], 'test_body')
 
     def test_view_change_document(self):
         self.client.force_login(self.test_user)
         data = {'id': self.test_doc.pk,
-                'body': 'new_body'}
+                'body': 'new_body',
+                'title': 'title',
+                'description': 'description'}
         response = self.client.post(reverse('edit'), data)
         self.assertEqual(response.status_code, 200)
         document = Document.objects.get(pk=data['id'])
-        self.assertEqual(document.body, 'new_body')
+        self.assertEqual(document.body, 'test_body')
 
     def test_document_does_not_exist(self):
         self.client.force_login(self.test_user)
