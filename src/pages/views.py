@@ -16,6 +16,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import HttpResponseServerError
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
+from django.views.decorators.cache import cache_control
 
 from document.forms import DocumentCreationForm
 from document.models import Document
@@ -32,7 +34,8 @@ def profile_view(request):
             doc = form.save(commit=False)
             doc.user = request.user
             doc.save()
-
+            return redirect(('{}?id='+str(doc.id)).format(reverse('edit')))
+        return HttpResponseServerError('Error. Document cannot be created.')
     return render(request, "pages/profile.html", {'form': DocumentCreationForm(), 'docs': docs})
 
 

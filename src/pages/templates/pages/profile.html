@@ -159,5 +159,12 @@ Your documents
         });
     });
 
+
+    window.addEventListener( "pageshow", function ( event ) {
+      var perfEntries = performance.getEntriesByType("navigation")
+      if (perfEntries[0].type === "back_forward") {
+        window.location.reload();
+      }
+    })
 </script>
 {% endblock %}
