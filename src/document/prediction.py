@@ -12,19 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
-import re
-
 import torch
-from filelock import FileLock
 from transformers import AlbertTokenizer, AlbertForMaskedLM, GPT2Tokenizer, GPT2LMHeadModel, BertTokenizer, \
     BertForMaskedLM, BatchEncoding, pipeline
 from transformers.utils import logging
 
 from register.models import PredictionModels
-
-LOCK_TIMEOUT = 10
-LOCK_FILE = 'prediction.lock'
-
 
 class PredictionModel:
     def __init__(self, tokenizer, head_model, pretrained: str, needs_mask: bool):
