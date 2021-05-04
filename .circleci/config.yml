@@ -41,6 +41,8 @@ jobs:
             python manage.py collectstatic --noinput
             python manage.py test
           name: Test
+      - store_test_results:
+          path: /tmp/test-reports
 
 workflows:
   test:
