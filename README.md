@@ -5,6 +5,7 @@
 ```shell
 # apt install mariadb-server libmariadb-dev
 # apt install python3-pip python3-dev
+# apt install python3-venv
 ```
 
 ## Create database
@@ -20,10 +21,14 @@ GRANT ALL ON test_smartscribbledb.* TO 'django'@'%';
 
 ```shell
 $ git clone https://github.com/juliannovoa/SmartScribble.git
+$ cd SmartScribble/
+$ python3.7 -m venv .
+$ source bin/activate
 $ pip3 install -r SmartScribble/requirements.txt
 ```
 
 ```shell
+$ cd src/
 $ python3 manage.py makemigrations 
 $ python3 manage.py migrate
 ```
@@ -32,4 +37,13 @@ $ python3 manage.py migrate
 
 ```shell
 $ python3 manage.py runserver
+```
+
+## Alternative: Docker
+
+Donwload Dockerfile from repository
+
+```shell
+$ docker build -t app .
+$ docker run -p 8000:8000 app
 ```
