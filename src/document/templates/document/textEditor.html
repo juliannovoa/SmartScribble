@@ -220,7 +220,6 @@ Text Editor
         if (prediction.length === 0) {
             return false
         }
-        let normalizedPrediction = prediction[0].normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase()
         if (key === " ") {
             return prediction.startsWith(String.fromCharCode(160))
 
