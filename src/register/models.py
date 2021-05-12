@@ -13,8 +13,6 @@
 #  limitations under the License.
 #
 
-# Create your models here.
-
 
 from django.contrib.auth.models import User
 from django.db import models
@@ -23,6 +21,7 @@ from django.dispatch import receiver
 
 
 class PredictionModels(models.TextChoices):
+    """ This model describes available prediction models """
     GPT2 = 'gpt-2'
     BERT = 'bert'
     ALBERT = 'albert'
@@ -30,6 +29,7 @@ class PredictionModels(models.TextChoices):
 
 
 class Settings(models.Model):
+    """ This model permits associate a user with a prediction model """
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     prediction_model = models.CharField(max_length=15,
                                         choices=PredictionModels.choices,
@@ -38,12 +38,14 @@ class Settings(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
+    """ This function automatically associates settings to a user when is created """
     if created:
         Settings.objects.create(user=instance)
 
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
+    """ This function automatically saves a user with settings when is created """
     instance.settings.save()
 
 

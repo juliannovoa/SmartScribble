@@ -20,6 +20,7 @@ from .models import Document
 
 
 class DocumentCreationForm(forms.ModelForm):
+    """ Formulary designed to create instances of documents """
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Your title'}))
     description = forms.CharField(required=False,
                                   widget=forms.TextInput(attrs={'placeholder': 'Description (optional)'}))
@@ -33,6 +34,7 @@ class DocumentCreationForm(forms.ModelForm):
 
 
 class DocumentEditionForm(forms.ModelForm):
+    """ Formulary designed to edit instances of documents """
     body = RichTextFormField(label="", required=False)
     id = forms.CharField(widget=forms.HiddenInput())
 
@@ -45,6 +47,7 @@ class DocumentEditionForm(forms.ModelForm):
 
 
 class ChangeNameDocumentForm(forms.ModelForm):
+    """ Formulary designed to change the name of a document """
     title = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'New title'}))
     id = forms.CharField(widget=forms.HiddenInput())
 
@@ -57,6 +60,7 @@ class ChangeNameDocumentForm(forms.ModelForm):
 
 
 class ChangeDescriptionDocumentForm(forms.ModelForm):
+    """ Formulary designed to change the description of a document """
     description = forms.CharField(required=False,
                                   widget=forms.TextInput(attrs={'placeholder': 'New description'}))
     id = forms.CharField(widget=forms.HiddenInput())

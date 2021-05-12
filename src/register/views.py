@@ -24,11 +24,21 @@ from django.urls import reverse
 from .models import descriptions, more_info
 from .forms import RegisterForm, LoginForm, PredictionModelForm, EmailChangeForm
 
-SESSION_TIME_NOT_REMEMBER = 0
-SESSION_TIME_REMEMBER = 7*24*60*60
+SESSION_TIME_NOT_REMEMBER = 0  # Session expires when browser is closed
+SESSION_TIME_REMEMBER = 7 * 24 * 60 * 60  # Session expires after one week
 
-# Create your views here.
+
 def register_view(request):
+    """
+
+    Creates a user
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     if request.user.is_authenticated:
         return redirect('profile')
     if request.method == 'POST':
@@ -44,6 +54,16 @@ def register_view(request):
 
 
 class CustomLoginView(LoginView):
+    """
+
+    Logs a user
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     redirect_authenticated_user = True
     template_name = 'register/login.html'
     authentication_form = LoginForm
@@ -59,6 +79,16 @@ class CustomLoginView(LoginView):
 
 @login_required
 def change_password_view(request):
+    """
+
+    Change user's password
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     if request.method == 'POST':
         form = PasswordChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -72,6 +102,16 @@ def change_password_view(request):
 
 @login_required
 def change_email_view(request):
+    """
+
+    Change user's email
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     if request.method == 'POST':
         form = EmailChangeForm(request.user, request.POST)
         if form.is_valid():
@@ -84,6 +124,16 @@ def change_email_view(request):
 
 @login_required
 def change_prediction_model_view(request):
+    """
+
+    Change user's prediction model
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     if request.method == 'POST':
         form = PredictionModelForm(request.POST)
         if form.is_valid():
@@ -100,9 +150,18 @@ def change_prediction_model_view(request):
                                                       'url': more_info})
 
 
-
 @login_required
 def remove_user_view(request):
+    """
+
+    Remove user
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     usr = get_object_or_404(User, pk=request.user.pk)
     try:
         usr.delete()

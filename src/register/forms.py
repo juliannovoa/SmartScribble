@@ -22,6 +22,7 @@ from .models import PredictionModels
 
 
 class RegisterForm(UserCreationForm):
+    """ Formulary designed to create a user """
     email = forms.EmailField()
 
     class Meta:
@@ -30,16 +31,20 @@ class RegisterForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
+    """ Formulary designed to log a user """
     remember_me = forms.BooleanField(label="Remember me", required=False)
 
 
 class PredictionModelForm(forms.Form):
-    selected_prediction_model = forms.ChoiceField(choices=[(model.name, model.value) for model in PredictionModels], widget=RadioSelect)
+    """ Formulary designed to change the prediciton model """
+    selected_prediction_model = forms.ChoiceField(choices=[(model.name, model.value) for model in PredictionModels],
+                                                  widget=RadioSelect)
 
 
 class EmailChangeForm(forms.Form):
+    """ Formulary designed to change the user's email """
     error_messages = {
-        'email_mismatch':"The two email addresses fields didn't match.",
+        'email_mismatch': "The two email addresses fields didn't match.",
         'not_changed': "The email address is the same as the one already defined.",
     }
 
@@ -85,4 +90,3 @@ class EmailChangeForm(forms.Form):
         if commit:
             self.user.save()
         return self.user
-

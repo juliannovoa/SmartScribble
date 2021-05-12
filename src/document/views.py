@@ -14,8 +14,6 @@
 #
 
 
-# Create your views here.
-
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseServerError, JsonResponse, HttpResponse
@@ -29,6 +27,16 @@ from register.models import PredictionModels
 
 @login_required
 def remove_document_view(request):
+    """
+
+    Remove a document
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     if request.method == 'POST':
         doc_id = request.POST['doc_id']
         doc = get_object_or_404(Document, pk=doc_id)
@@ -42,6 +50,16 @@ def remove_document_view(request):
 
 @login_required
 def edit_document_view(request):
+    """
+
+    Edit a document
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     if request.method == 'GET':
         doc_id = request.GET['id']
     elif request.method == 'POST':
@@ -73,6 +91,16 @@ def edit_document_view(request):
 
 @login_required
 def save_document_view(request):
+    """
+
+    Save a document
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     if request.method == 'POST':
         doc_id = request.POST['id']
         doc = get_object_or_404(Document, pk=doc_id)
@@ -85,6 +113,16 @@ def save_document_view(request):
 
 @login_required
 def predict_view(request):
+    """
+
+    Get a prediction
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     INPUT_KEY = 'input'
     if request.method == 'GET' and request.is_ajax() and INPUT_KEY in request.GET:
         # Encode a text inputs
@@ -96,6 +134,16 @@ def predict_view(request):
 
 @login_required
 def full_predict_view(request):
+    """
+
+    Get a long prediction
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     INPUT_KEY = 'input'
     if request.method == 'GET' and request.is_ajax() and INPUT_KEY in request.GET:
         # Encode a text inputs

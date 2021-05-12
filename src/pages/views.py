@@ -23,10 +23,19 @@ from document.forms import DocumentCreationForm
 from document.models import Document
 
 
-# Create your views here.
 
 @login_required
 def profile_view(request):
+    """
+
+    Shows user's profile
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     docs = Document.objects.filter(user__exact=request.user)
     if request.method == "POST":
         form = DocumentCreationForm(request.POST)
@@ -41,6 +50,16 @@ def profile_view(request):
 
 @login_required
 def change_data_view(request):
+    """
+
+    Shows change data page
+
+    Args:
+        request: HTTP request
+
+    Returns: HTTP response
+
+    """
     if request.method == "POST":
         usr = get_object_or_404(User, pk=request.user.pk)
         try:
