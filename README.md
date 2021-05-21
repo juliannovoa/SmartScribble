@@ -1,5 +1,7 @@
 # SmartScribble
 
+The aim of this project is to develop a tool for assisted text writing by using the latest advances in Natural Language Processing. For this purpose, a web application has been developed in which users can register, create text documents, edit them and delete them. While editing the documents, the user gets a suggestion of the word that should appear next in the text. 
+
 ## Install dependencies
 
 ```shell
